@@ -1,0 +1,13 @@
+{
+  "name": "@kunlun/configs",
+  "version": "0.1.0",
+  "description": "The config package for Kunlun",
+  "main": "dist/main.js",
+  "keywords": [
+    "Kunlun",
+    "configs"
+  ],
+  "author": "iqiziqi",
+  "private": "true",
+  "license": "ISC"
+}
