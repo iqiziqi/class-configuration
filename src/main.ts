@@ -33,10 +33,10 @@ export function ConfigField(from: IFrom) {
   }
 }
 
-export function init(instance: any) {
+export function init<T>(instance: T) {
   const keys =  Reflect.getMetadataKeys(instance);
   for (const key of keys) {
-    instance[key] = Reflect.getMetadata(CONFIG_VALUE, instance, key);
+    (instance as any)[key] = Reflect.getMetadata(CONFIG_VALUE, instance, key);
   }
   return instance;
 }
