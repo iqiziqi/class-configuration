@@ -7,6 +7,16 @@ interface IFrom {
 
 const CONFIG_VALUE = Symbol('CONFIG_VALUE');
 
+/**
+ * Parse a value to boolean.
+ */
+function parseBool(value: any) {
+  if (typeof value !== 'string') return Boolean(value);
+  if (value.toLowerCase() === 'true' || value.toLowerCase() === 't') return true;
+  if (value.toLowerCase() === 'false' || value.toLowerCase() === 'f') return false;
+  throw new TypeError(`Can't convert type of '${value}' to boolean!`);
+}
+
 export function ConfigField(from: IFrom) {
   return function(target: any, propertyKey: string) {
     const filedType = Reflect.getMetadata('design:type', target, propertyKey);
@@ -26,7 +36,7 @@ export function ConfigField(from: IFrom) {
     }
     if (filedType === Boolean) {
       Reflect.defineMetadata(propertyKey, undefined, target)
-      Reflect.defineMetadata(CONFIG_VALUE, Boolean(value), target, propertyKey);
+      Reflect.defineMetadata(CONFIG_VALUE, parseBool(value), target, propertyKey);
       return;
     }
     throw new TypeError('Get the type of not support!');
