@@ -1,0 +1,9 @@
+{
+  "colors": true,
+  "recursive": [
+    "spec/*.spec.ts"
+  ],
+  "require": [
+    "ts-node/register"
+  ]
+}
