@@ -4,7 +4,8 @@
   "description": "The config package for Kunlun",
   "main": "dist/main.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "cover": "nyc mocha"
   },
   "keywords": [
     "Kunlun",
@@ -14,11 +15,13 @@
   "private": "true",
   "license": "ISC",
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/chai": "^4.2.18",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.6.1",
     "chai": "^4.3.4",
     "mocha": "^8.4.0",
+    "nyc": "^15.1.0",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.2"
