@@ -2,34 +2,83 @@ import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import { ConfigField, init } from "../src/main";
 
+process.env.SERVER_HOST = 'localhost';
+process.env.SERVER_PORT = '8080';
+
+process.env.LONG_BOOL_TRUE = 'true';
+process.env.SHORT_BOOL_TRUE = 't';
+process.env.LONG_BOOL_FALSE = 'FALSE';
+process.env.SHORT_BOOL_FALSE = 'f';
+
 class StringFieldConfig {
-  @ConfigField({ env: 'SERVER_HOST', default: 'localhost' })
+  @ConfigField({ env: 'SERVER_HOST', default: 'default' })
   public host!: string;
+
+  @ConfigField({ env: 'NO_STRING_VALUE', default: 'localhost' })
+  public noStringValue!: string;
 }
 
 class NumberFieldConfig {
-  @ConfigField({ env: 'SERVER_PORT', default: 8080 })
+  @ConfigField({ env: 'SERVER_PORT', default: 1000 })
   public port!: number;
+
+  @ConfigField({ env: 'NO_NUMBER_VALUE', default: 8080 })
+  public noNumberValue!: number;
 }
 
 class BooleanFieldConfig {
-  @ConfigField({ env: 'SERVER_START', default: false })
-  public start!: boolean;
+  @ConfigField({ env: 'NO_BOOL_VALUE', default: false })
+  public noBoolValue!: boolean;
+
+  @ConfigField({ env: 'LONG_BOOL_TRUE', default: false })
+  public longBoolTrue!: boolean;
+
+  @ConfigField({ env: 'SHORT_BOOL_TRUE', default: false })
+  public shortBoolTrue!: boolean;
+
+  @ConfigField({ env: 'LONG_BOOL_FALSE', default: true })
+  public longBoolFalse!: boolean;
+
+  @ConfigField({ env: 'SHORT_BOOL_FALSE', default: true })
+  public shortBoolFalse!: boolean;
 }
 
 describe('config', function () {
-  it('should get string field', function () {
+
+  it('should get string field by environments', function () {
     const config = init(new StringFieldConfig());
     expect(config.host).equal('localhost');
   });
 
-  it('should get number field', function () {
+  it('should get string field by default value', function () {
+    const config = init(new StringFieldConfig());
+    expect(config.noStringValue).equal('localhost');
+  });
+
+  it('should get number field by environments', function () {
     const config = init(new NumberFieldConfig());
     expect(config.port).equal(8080);
   });
 
-  it('should get boolean field', function () {
+  it('should get number field by default value', function () {
+    const config = init(new NumberFieldConfig());
+    expect(config.noNumberValue).equal(8080);
+  });
+
+  it('should get boolean field by long string', function () {
     const config = init(new BooleanFieldConfig());
-    expect(config.start).equal(false);
+    expect(config.longBoolTrue).equal(true);
+    expect(config.longBoolFalse).equal(false);
+  });
+
+  it('should get boolean field by short string', function () {
+    const config = init(new BooleanFieldConfig());
+    expect(config.shortBoolTrue).equal(true);
+    expect(config.shortBoolFalse).equal(false);
+  });
+
+  it('should get boolean field by default value', function () {
+    const config = init(new BooleanFieldConfig());
+    expect(config.noBoolValue).equal(false);
   });
 });
