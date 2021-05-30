@@ -10,6 +10,9 @@ process.env.SHORT_BOOL_TRUE = 't';
 process.env.LONG_BOOL_FALSE = 'FALSE';
 process.env.SHORT_BOOL_FALSE = 'f';
 
+process.env.NOT_NUMBER_VALUE = 'test';
+process.env.NOT_BOOL_VALUE = 'test';
+
 class StringFieldConfig {
   @ConfigField({ env: 'SERVER_HOST', default: 'default' })
   public host!: string;
@@ -80,5 +83,32 @@ describe('config', function () {
   it('should get boolean field by default value', function () {
     const config = init(new BooleanFieldConfig());
     expect(config.noBoolValue).equal(false);
+  });
+
+  it('should throw a error when value is not number type', function () {
+    expect(() => {
+      class ErrorNumberConfig {
+        @ConfigField({ env: 'NOT_NUMBER_VALUE', default: 12 })
+        public notNumberType!: number;
+      }
+    }).throws(`Can't convert type of '${process.env.NOT_NUMBER_VALUE}' to number!`);
+  });
+
+  it('should throw a error when value is not boolean type', function () {
+    expect(() => {
+      class ErrorBoolConfig {
+        @ConfigField({ env: 'NOT_BOOL_VALUE', default: true })
+        public notBoolValue!: boolean;
+      }
+    }).throws(`Can't convert type of '${process.env.NOT_BOOL_VALUE}' to boolean!`);
+  });
+
+  it('should throw a error when value is not default value', function () {
+    expect(() => {
+      class NoDefaultConfig {
+        @ConfigField({ env: 'NO_DEFAULT_VALUE '})
+        public noDefaultValue!: string;
+      }
+    }).throws(`Can't find default value!`);
   });
 });
