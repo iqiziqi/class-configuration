@@ -17,6 +17,15 @@ function parseBool(value: any) {
   throw new TypeError(`Can't convert type of '${value}' to boolean!`);
 }
 
+/**
+ * Parse a value to number.
+ */
+function parseNumber(value: any) {
+  const result = Number.parseFloat(value);
+  if (!Number.isNaN(result)) return result;
+  throw new TypeError(`Can't convert type of '${value}' to number!`);
+}
+
 export function ConfigField(from: IFrom) {
   return function(target: any, propertyKey: string) {
     const filedType = Reflect.getMetadata('design:type', target, propertyKey);
@@ -31,7 +40,7 @@ export function ConfigField(from: IFrom) {
     }
     if (filedType === Number) {
       Reflect.defineMetadata(propertyKey, undefined, target)
-      Reflect.defineMetadata(CONFIG_VALUE, Number.parseInt(value, 10), target, propertyKey);
+      Reflect.defineMetadata(CONFIG_VALUE, parseNumber(value), target, propertyKey);
       return;
     }
     if (filedType === Boolean) {
