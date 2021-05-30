@@ -26,6 +26,11 @@ function parseNumber(value: any) {
   throw new TypeError(`Can't convert type of '${value}' to number!`);
 }
 
+/**
+ * Define a config field.
+ *
+ * @param from the config of field
+ */
 export function ConfigField(from: IFrom) {
   return function(target: any, propertyKey: string) {
     const filedType = Reflect.getMetadata('design:type', target, propertyKey);
@@ -52,6 +57,12 @@ export function ConfigField(from: IFrom) {
   }
 }
 
+/**
+ * Init the config instance.
+ *
+ * @param instance The instance of config
+ * @returns        The instance of config after init
+ */
 export function init<T>(instance: T) {
   const keys =  Reflect.getMetadataKeys(instance);
   for (const key of keys) {
