@@ -111,4 +111,13 @@ describe('config', function () {
       }
     }).throws(`Can't find default value!`);
   });
+
+  it('should throw a error when value type is not supported', function () {
+    expect(() => {
+      class NoDefaultConfig {
+        @ConfigField({ env: 'NOT_SUPPORTED_TYPE', default: Symbol('not-support') })
+        public noDefaultValue!: Symbol;
+      }
+    }).throws(`Get the type of not support!`);
+  });
 });
