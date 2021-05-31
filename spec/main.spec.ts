@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { ConfigField, init } from "../src/main";
+import { DefaultValue, FromEnv, init } from "../src/main";
 
 process.env.SERVER_HOST = 'localhost';
 process.env.SERVER_PORT = '8080';
@@ -14,36 +14,68 @@ process.env.NOT_NUMBER_VALUE = 'test';
 process.env.NOT_BOOL_VALUE = 'test';
 
 class StringFieldConfig {
-  @ConfigField({ env: 'SERVER_HOST', default: 'default' })
+  @FromEnv('SERVER_HOST')
+  @DefaultValue('default')
   public host!: string;
 
-  @ConfigField({ env: 'NO_STRING_VALUE', default: 'localhost' })
+  @FromEnv('NO_STRING_VALUE')
+  @DefaultValue('localhost')
   public noStringValue!: string;
 }
 
 class NumberFieldConfig {
-  @ConfigField({ env: 'SERVER_PORT', default: 1000 })
+  @FromEnv('SERVER_PORT')
+  @DefaultValue(1000)
   public port!: number;
 
-  @ConfigField({ env: 'NO_NUMBER_VALUE', default: 8080 })
+  @FromEnv('NO_NUMBER_VALUE')
+  @DefaultValue(8080)
   public noNumberValue!: number;
 }
 
 class BooleanFieldConfig {
-  @ConfigField({ env: 'NO_BOOL_VALUE', default: false })
+  @FromEnv('NO_BOOL_VALUE')
+  @DefaultValue(false)
   public noBoolValue!: boolean;
 
-  @ConfigField({ env: 'LONG_BOOL_TRUE', default: false })
+  @FromEnv('LONG_BOOL_TRUE')
+  @DefaultValue(false)
   public longBoolTrue!: boolean;
 
-  @ConfigField({ env: 'SHORT_BOOL_TRUE', default: false })
+  @FromEnv('SHORT_BOOL_TRUE')
+  @DefaultValue(false)
   public shortBoolTrue!: boolean;
 
-  @ConfigField({ env: 'LONG_BOOL_FALSE', default: true })
+  @FromEnv('LONG_BOOL_FALSE')
+  @DefaultValue(true)
   public longBoolFalse!: boolean;
 
-  @ConfigField({ env: 'SHORT_BOOL_FALSE', default: true })
+  @FromEnv('SHORT_BOOL_FALSE')
+  @DefaultValue(true)
   public shortBoolFalse!: boolean;
+}
+
+class ErrorNumberConfig {
+  @FromEnv('NOT_NUMBER_VALUE')
+  @DefaultValue(12)
+  public notNumberType!: number;
+}
+
+class ErrorBoolConfig {
+  @FromEnv('NOT_BOOL_VALUE')
+  @DefaultValue(true)
+  public notBoolValue!: boolean;
+}
+
+class NoDefaultConfig {
+  @FromEnv('NO_DEFAULT_VALUE')
+  public noDefaultValue!: string;
+}
+
+class NotDefaultConfig {
+  @FromEnv('NOT_SUPPORTED_TYPE')
+  @DefaultValue(Symbol('not-support'))
+  public noDefaultValue!: Symbol;
 }
 
 describe('config', function () {
@@ -86,38 +118,22 @@ describe('config', function () {
   });
 
   it('should throw a error when value is not number type', function () {
-    expect(() => {
-      class ErrorNumberConfig {
-        @ConfigField({ env: 'NOT_NUMBER_VALUE', default: 12 })
-        public notNumberType!: number;
-      }
-    }).throws(`Can't convert type of '${process.env.NOT_NUMBER_VALUE}' to number!`);
+    expect(() => init(new ErrorNumberConfig()))
+      .throws(`Can't convert type of '${process.env.NOT_NUMBER_VALUE}' to number!`);
   });
 
   it('should throw a error when value is not boolean type', function () {
-    expect(() => {
-      class ErrorBoolConfig {
-        @ConfigField({ env: 'NOT_BOOL_VALUE', default: true })
-        public notBoolValue!: boolean;
-      }
-    }).throws(`Can't convert type of '${process.env.NOT_BOOL_VALUE}' to boolean!`);
+    expect(() => init(new ErrorBoolConfig()))
+      .throws(`Can't convert type of '${process.env.NOT_BOOL_VALUE}' to boolean!`);
   });
 
   it('should throw a error when value is not default value', function () {
-    expect(() => {
-      class NoDefaultConfig {
-        @ConfigField({ env: 'NO_DEFAULT_VALUE '})
-        public noDefaultValue!: string;
-      }
-    }).throws(`Can't find default value!`);
+    expect(() => init(new NoDefaultConfig()))
+      .throws(`Can't find default value!`);
   });
 
   it('should throw a error when value type is not supported', function () {
-    expect(() => {
-      class NoDefaultConfig {
-        @ConfigField({ env: 'NOT_SUPPORTED_TYPE', default: Symbol('not-support') })
-        public noDefaultValue!: Symbol;
-      }
-    }).throws(`Get the type of not support!`);
+    expect(() => init(new NotDefaultConfig()))
+      .throws(`Get the type of not support!`);
   });
 });
