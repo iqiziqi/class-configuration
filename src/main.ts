@@ -1,11 +1,7 @@
 import 'reflect-metadata';
 
-interface IFrom {
-  env?: string;
-  default?: any;
-}
-
-const CONFIG_VALUE = Symbol('CONFIG_VALUE');
+const CONFIG_DEFAULT_VALUE = Symbol('CONFIG_DEFAULT_VALUE');
+const CONFIG_ENV_VALUE = Symbol('CONFIG_ENV_VALUE');
 
 /**
  * Parse a value to boolean.
@@ -26,35 +22,18 @@ function parseNumber(value: any) {
   throw new TypeError(`Can't convert type of '${value}' to number!`);
 }
 
-/**
- * Define a config field.
- *
- * @param from the config of field
- */
-export function ConfigField(from: IFrom) {
+export function FromEnv(name?: string) {
   return function(target: any, propertyKey: string) {
-    const filedType = Reflect.getMetadata('design:type', target, propertyKey);
-    const env_value = from.env ? process.env[from.env] : process.env[propertyKey];
-    const value = env_value ?? from.default;
+    const value = name ? process.env[name] : process.env[propertyKey];
+    Reflect.defineMetadata(propertyKey, undefined, target);
+    Reflect.defineMetadata(CONFIG_ENV_VALUE, value, target, propertyKey);
+  };
+}
 
-    if (value === undefined) throw new TypeError(`Can't find default value!`);
-    if (filedType === String) {
-      Reflect.defineMetadata(propertyKey, undefined, target)
-      Reflect.defineMetadata(CONFIG_VALUE, value, target, propertyKey);
-      return;
-    }
-    if (filedType === Number) {
-      Reflect.defineMetadata(propertyKey, undefined, target)
-      Reflect.defineMetadata(CONFIG_VALUE, parseNumber(value), target, propertyKey);
-      return;
-    }
-    if (filedType === Boolean) {
-      Reflect.defineMetadata(propertyKey, undefined, target)
-      Reflect.defineMetadata(CONFIG_VALUE, parseBool(value), target, propertyKey);
-      return;
-    }
-    throw new TypeError('Get the type of not support!');
-  }
+export function DefaultValue(value: any) {
+  return function (target: any, propertyKey: string) {
+    Reflect.defineMetadata(CONFIG_DEFAULT_VALUE, value, target, propertyKey);
+  };
 }
 
 /**
@@ -66,7 +45,17 @@ export function ConfigField(from: IFrom) {
 export function init<T>(instance: T) {
   const keys =  Reflect.getMetadataKeys(instance);
   for (const key of keys) {
-    (instance as any)[key] = Reflect.getMetadata(CONFIG_VALUE, instance, key);
+    const filedType = Reflect.getMetadata('design:type', instance, key);
+    const valueFromEnv = Reflect.getMetadata(CONFIG_ENV_VALUE, instance, key);
+    const valueFromDefault = Reflect.getMetadata(CONFIG_DEFAULT_VALUE, instance, key);
+    const nativeValue = valueFromEnv ?? valueFromDefault;
+    if (nativeValue === undefined) throw new TypeError(`Can't find default value!`);
+    const value =
+      filedType === String ? nativeValue :
+      filedType === Number ? parseNumber(nativeValue) :
+      filedType === Boolean ? parseBool(nativeValue) :
+      (() => { throw new TypeError('Get the type of not support!'); })();
+    (instance as any)[key] = value;
   }
   return instance;
 }
