@@ -23,7 +23,7 @@ function parseNumber(value: any) {
 }
 
 export function FromEnv(name?: string) {
-  return function(target: any, propertyKey: string) {
+  return function (target: any, propertyKey: string) {
     const value = name ? process.env[name] : process.env[propertyKey];
     Reflect.defineMetadata(propertyKey, undefined, target);
     Reflect.defineMetadata(CONFIG_ENV_VALUE, value, target, propertyKey);
@@ -43,7 +43,7 @@ export function DefaultValue(value: any) {
  * @returns        The instance of config after init
  */
 export function init<T>(instance: T) {
-  const keys =  Reflect.getMetadataKeys(instance);
+  const keys = Reflect.getMetadataKeys(instance);
   for (const key of keys) {
     const filedType = Reflect.getMetadata('design:type', instance, key);
     const valueFromEnv = Reflect.getMetadata(CONFIG_ENV_VALUE, instance, key);
@@ -51,10 +51,15 @@ export function init<T>(instance: T) {
     const nativeValue = valueFromEnv ?? valueFromDefault;
     if (nativeValue === undefined) throw new TypeError(`Can't find default value!`);
     const value =
-      filedType === String ? nativeValue :
-      filedType === Number ? parseNumber(nativeValue) :
-      filedType === Boolean ? parseBool(nativeValue) :
-      (() => { throw new TypeError('Get the type of not support!'); })();
+      filedType === String
+        ? nativeValue
+        : filedType === Number
+        ? parseNumber(nativeValue)
+        : filedType === Boolean
+        ? parseBool(nativeValue)
+        : (() => {
+            throw new TypeError('Get the type of not support!');
+          })();
     (instance as any)[key] = value;
   }
   return instance;

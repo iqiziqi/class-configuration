@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { DefaultValue, FromEnv, init } from "../src/main";
+import { DefaultValue, FromEnv, init } from '../src/main';
 
 process.env.SERVER_HOST = 'localhost';
 process.env.SERVER_PORT = '8080';
@@ -79,7 +79,6 @@ class NotDefaultConfig {
 }
 
 describe('config', function () {
-
   it('should get string field by environments', function () {
     const config = init(new StringFieldConfig());
     expect(config.host).equal('localhost');
@@ -118,22 +117,26 @@ describe('config', function () {
   });
 
   it('should throw a error when value is not number type', function () {
-    expect(() => init(new ErrorNumberConfig()))
-      .throws(`Can't convert type of '${process.env.NOT_NUMBER_VALUE}' to number!`);
+    expect(() => init(new ErrorNumberConfig())).throws(
+      `Can't convert type of '${process.env.NOT_NUMBER_VALUE}' to number!`,
+    );
   });
 
   it('should throw a error when value is not boolean type', function () {
-    expect(() => init(new ErrorBoolConfig()))
-      .throws(`Can't convert type of '${process.env.NOT_BOOL_VALUE}' to boolean!`);
+    expect(() => init(new ErrorBoolConfig())).throws(
+      `Can't convert type of '${process.env.NOT_BOOL_VALUE}' to boolean!`,
+    );
   });
 
   it('should throw a error when value is not default value', function () {
-    expect(() => init(new NoDefaultConfig()))
-      .throws(`Can't find default value!`);
+    expect(() => init(new NoDefaultConfig())).throws(
+      `Can't find default value!`,
+    );
   });
 
   it('should throw a error when value type is not supported', function () {
-    expect(() => init(new NotDefaultConfig()))
-      .throws(`Get the type of not support!`);
+    expect(() => init(new NotDefaultConfig())).throws(
+      `Get the type of not support!`,
+    );
   });
 });
