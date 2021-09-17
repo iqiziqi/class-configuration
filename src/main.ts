@@ -22,10 +22,29 @@ function parseNumber(value: any) {
   throw new TypeError(`Can't convert type of '${value}' to number!`);
 }
 
+/**
+ * Parse a value from config class.
+ */
+function parseConfigClass(value: any) {
+  try {
+    return init(new value());
+  } catch(e) {
+    throw new TypeError('Get the type of not support!')
+  }
+}
+
+/**
+ * Set a class field to config item.
+ */
+export function ConfigItem() {
+  return function (target: any, propertyKey: string) {
+    Reflect.defineMetadata(propertyKey, undefined, target);
+  }
+}
+
 export function FromEnv(name?: string) {
   return function (target: any, propertyKey: string) {
     const value = name ? process.env[name] : process.env[propertyKey];
-    Reflect.defineMetadata(propertyKey, undefined, target);
     Reflect.defineMetadata(CONFIG_ENV_VALUE, value, target, propertyKey);
   };
 }
@@ -49,18 +68,22 @@ export function init<T>(instance: T) {
     const valueFromEnv = Reflect.getMetadata(CONFIG_ENV_VALUE, instance, key);
     const valueFromDefault = Reflect.getMetadata(CONFIG_DEFAULT_VALUE, instance, key);
     const nativeValue = valueFromEnv ?? valueFromDefault;
-    if (nativeValue === undefined) throw new TypeError(`Can't find default value!`);
-    const value =
-      filedType === String
-        ? nativeValue
-        : filedType === Number
-        ? parseNumber(nativeValue)
-        : filedType === Boolean
-        ? parseBool(nativeValue)
-        : (() => {
-            throw new TypeError('Get the type of not support!');
-          })();
-    (instance as any)[key] = value;
+    switch (true) {
+      case filedType === String:
+        (instance as any)[key] = nativeValue;
+        break;
+      case filedType === Number:
+        (instance as any)[key] = parseNumber(nativeValue);
+        break;
+      case filedType === Boolean:
+        (instance as any)[key] = parseBool(nativeValue);
+        break;
+      case typeof filedType === 'function':
+        (instance as any)[key] = parseConfigClass(filedType);
+        break;
+      default:
+        throw new TypeError('Get the type of not support!');
+    }
   }
   return instance;
 }
