@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ConfigItem, FromEnv, DefaultValue, init } from '../src/main';
+import { Config, ConfigItem, FromEnv, DefaultValue, init } from '../src/main';
 
 process.env.LONG_BOOL_TRUE = 'true';
 process.env.SHORT_BOOL_TRUE = 't';
@@ -9,6 +9,7 @@ process.env.NOT_BOOL_VALUE = 'test';
 
 describe('Parse boolean field', function () {
 
+  @Config()
   class BooleanFieldConfig {
     @ConfigItem()
     @FromEnv('NO_BOOL_VALUE')
@@ -36,6 +37,7 @@ describe('Parse boolean field', function () {
     public shortBoolFalse!: boolean;
   }
 
+  @Config()
   class ErrorBoolConfig {
     @ConfigItem()
     @FromEnv('NOT_BOOL_VALUE')

@@ -1,11 +1,12 @@
 import { expect } from 'chai';
-import { ConfigItem, FromEnv, DefaultValue, init } from '../src/main';
+import { Config, ConfigItem, FromEnv, DefaultValue, init } from '../src/main';
 
 process.env.SERVER_HOST = 'localhost';
 process.env.SERVER_PORT = '8080';
 
 describe('Parse string field', function () {
 
+  @Config()
   class StringFieldConfig {
     @ConfigItem()
     @FromEnv('SERVER_HOST')
