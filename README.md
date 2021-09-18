@@ -24,12 +24,14 @@ You should install `reflect-metadata` package. And set follow code on `tsconfig.
 
 ```ts
 import 'reflect-metadata';
-import { DefaultValue, FromEnv, init } from 'configs';
+import { Config, ConfigField, DefaultValue, FromEnv, init } from 'configs';
 
+@Config()
 class Configuration {
   /**
    * The server host
    */
+  @ConfigField()
   @FromEnv('SERVER_HOST')
   @DefaultValue('localhost')
   public host!: string;
@@ -37,6 +39,7 @@ class Configuration {
   /**
    * The server port
    */
+  @ConfigField()
   @ConfigField('SERVER_PORT')
   @DefaultValue(8080)
   public port!: number;
