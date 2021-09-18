@@ -35,7 +35,7 @@ export function Config() {
 /**
  * Set a class field to config item.
  */
-export function ConfigItem() {
+export function ConfigField() {
   return function (target: any, propertyKey: string) {
     Reflect.defineMetadata(propertyKey, undefined, target);
   };

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Config, ConfigItem, FromEnv, DefaultValue, init } from '../src/main';
+import { Config, ConfigField, FromEnv, DefaultValue, init } from '../src/main';
 
 process.env.SERVER_HOST = 'localhost';
 process.env.SERVER_PORT = '8080';
@@ -9,12 +9,12 @@ describe('Parse number field', function () {
 
   @Config()
   class NumberFieldConfig {
-    @ConfigItem()
+    @ConfigField()
     @FromEnv('SERVER_PORT')
     @DefaultValue(1000)
     public port!: number;
 
-    @ConfigItem()
+    @ConfigField()
     @FromEnv('NO_NUMBER_VALUE')
     @DefaultValue(8080)
     public noNumberValue!: number;
@@ -22,7 +22,7 @@ describe('Parse number field', function () {
 
   @Config()
   class ErrorNumberConfig {
-    @ConfigItem()
+    @ConfigField()
     @FromEnv('NOT_NUMBER_VALUE')
     @DefaultValue(12)
     public notNumberType!: number;

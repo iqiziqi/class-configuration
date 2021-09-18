@@ -1,52 +1,52 @@
 import { expect } from 'chai';
-import { Config, ConfigItem, DefaultValue, FromEnv, init } from '../src/main';
+import { Config, ConfigField, DefaultValue, FromEnv, init } from '../src/main';
 
 describe('Parse config class field', function () {
 
   @Config()
   class DatabaseConfig {
-    @ConfigItem()
+    @ConfigField()
     @DefaultValue('localhost')
     host!: string;
 
-    @ConfigItem()
+    @ConfigField()
     @DefaultValue(8080)
     port!: number;
   }
 
   @Config()
   class ConfigClassFieldConfig {
-    @ConfigItem()
+    @ConfigField()
     public database!: DatabaseConfig;
   }
 
   @Config()
   class ErrorConfigClassFieldOfAnyConfig {
-    @ConfigItem()
+    @ConfigField()
     public error!: any;
   }
 
   @Config()
   class ErrorConfigClassFieldOfNeverConfig {
-    @ConfigItem()
+    @ConfigField()
     public error!: never;
   }
 
   @Config()
   class ErrorConfigClassFieldOfArrayConfig {
-    @ConfigItem()
+    @ConfigField()
     public error!: Array<string>;
   }
 
   @Config()
   class ErrorConfigClassFieldOfPartialConfig {
-    @ConfigItem()
+    @ConfigField()
     public error!: Partial<DatabaseConfig>;
   }
 
   @Config()
   class ErrorConfigClassFieldWithDefaultValue {
-    @ConfigItem()
+    @ConfigField()
     @DefaultValue({
       host: '127.0.0.1',
       port: 9090,
@@ -56,7 +56,7 @@ describe('Parse config class field', function () {
 
   @Config()
   class ErrorConfigClassFieldWithEnvValue {
-    @ConfigItem()
+    @ConfigField()
     @FromEnv('test')
     public database!: DatabaseConfig;
   }
