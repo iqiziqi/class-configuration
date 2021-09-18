@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 
+const CONFIG_CLASS = Symbol('CONFIG_CLASS');
 const CONFIG_DEFAULT_VALUE = Symbol('CONFIG_DEFAULT_VALUE');
 const CONFIG_ENV_VALUE = Symbol('CONFIG_ENV_VALUE');
 
@@ -23,14 +24,12 @@ function parseNumber(value: any) {
 }
 
 /**
- * Parse a value from config class.
+ * Set a class to config class.
  */
-function parseConfigClass(value: any) {
-  try {
-    return init(new value());
-  } catch(e) {
-    throw new TypeError('Get the type of not support!')
-  }
+export function Config() {
+  return function <T extends { new (...args: any[]): any }>(constructor: T) {
+    Reflect.defineMetadata(CONFIG_CLASS, undefined, constructor);
+  };
 }
 
 /**
@@ -39,9 +38,17 @@ function parseConfigClass(value: any) {
 export function ConfigItem() {
   return function (target: any, propertyKey: string) {
     Reflect.defineMetadata(propertyKey, undefined, target);
-  }
+  };
 }
 
+/**
+ * Set environment value for a class field.
+ * If the field type is not string,
+ * it will try convert to target type
+ * It will override the default value.
+ *
+ * @param name The environment name.
+ */
 export function FromEnv(name?: string) {
   return function (target: any, propertyKey: string) {
     const value = name ? process.env[name] : process.env[propertyKey];
@@ -49,6 +56,12 @@ export function FromEnv(name?: string) {
   };
 }
 
+/**
+ * Set default value for a class field.
+ * It is't check the type of param.
+ *
+ * @param value The default value.
+ */
 export function DefaultValue(value: any) {
   return function (target: any, propertyKey: string) {
     Reflect.defineMetadata(CONFIG_DEFAULT_VALUE, value, target, propertyKey);
@@ -78,11 +91,16 @@ export function init<T>(instance: T) {
       case filedType === Boolean:
         (instance as any)[key] = parseBool(nativeValue);
         break;
-      case typeof filedType === 'function':
-        (instance as any)[key] = parseConfigClass(filedType);
+      case typeof filedType === 'function' && Reflect.hasMetadata(CONFIG_CLASS, filedType):
+        if (Reflect.hasMetadata(CONFIG_DEFAULT_VALUE, instance, key))
+          throw new TypeError(`Config class field '${key}' can't set default value`);
+        if (Reflect.hasMetadata(CONFIG_ENV_VALUE, instance, key))
+          throw new TypeError(`Config class field '${key}' can't set environment value`);
+        (instance as any)[key] = init(new filedType());
         break;
       default:
-        throw new TypeError('Get the type of not support!');
+        const typeName = filedType?.name ? `: '${filedType.name}'` : '';
+        throw new TypeError(`From instance '${key}' get a not support type${typeName}.`);
     }
   }
   return instance;
