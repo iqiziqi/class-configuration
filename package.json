@@ -1,7 +1,7 @@
 {
-  "name": "@kunlun/configs",
+  "name": "class-configuration",
   "version": "0.1.0",
-  "description": "The config package for Kunlun",
+  "description": "The config package to define and read the configuration",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "scripts": {
@@ -9,18 +9,20 @@
     "cover": "nyc mocha"
   },
   "keywords": [
-    "Kunlun",
-    "configs"
+    "class",
+    "config",
+    "configuration",
+    "env"
   ],
   "author": "iqiziqi",
-  "private": "true",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/chai": "^4.2.18",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.6.1",
     "chai": "^4.3.4",
+    "class-validator": "^0.13.1",
     "mocha": "^8.4.0",
     "nyc": "^15.1.0",
     "prettier": "^2.3.0",

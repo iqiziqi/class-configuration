@@ -6,6 +6,7 @@ specifiers:
   '@types/mocha': ^8.2.2
   '@types/node': ^15.6.1
   chai: ^4.3.4
+  class-validator: ^0.13.1
   mocha: ^8.4.0
   nyc: ^15.1.0
   prettier: ^2.3.0
@@ -19,6 +20,7 @@ devDependencies:
   '@types/mocha': 8.2.2
   '@types/node': 15.6.1
   chai: 4.3.4
+  class-validator: 0.13.1
   mocha: 8.4.0
   nyc: 15.1.0
   prettier: 2.3.0
@@ -461,6 +463,14 @@ packages:
       readdirp: 3.5.0
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
+
+  /class-validator/0.13.1:
+    resolution: {integrity: sha1-OBsgAe5rngWv0TNnH733YNp97Gc=, tarball: class-validator/download/class-validator-0.13.1.tgz}
+    dependencies:
+      '@types/validator': registry.nlark.com/@types/validator/13.6.3
+      libphonenumber-js: registry.nlark.com/libphonenumber-js/1.9.34
+      validator: registry.nlark.com/validator/13.6.0
     dev: true
 
   /clean-stack/2.2.0:
@@ -1577,4 +1587,23 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: true
+
+  registry.nlark.com/@types/validator/13.6.3:
+    resolution: {integrity: sha1-McoumXvxOg//yjCiV0fVuffbt94=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/validator/download/@types/validator-13.6.3.tgz}
+    name: '@types/validator'
+    version: 13.6.3
+    dev: true
+
+  registry.nlark.com/libphonenumber-js/1.9.34:
+    resolution: {integrity: sha1-3d3HeKmy9TxwUA/PEMlINZbjV08=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/libphonenumber-js/download/libphonenumber-js-1.9.34.tgz}
+    name: libphonenumber-js
+    version: 1.9.34
+    dev: true
+
+  registry.nlark.com/validator/13.6.0:
+    resolution: {integrity: sha1-HnGJnBTNx7IGhGPLJMHMFvbscFk=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/validator/download/validator-13.6.0.tgz}
+    name: validator
+    version: 13.6.0
+    engines: {node: '>= 0.10'}
     dev: true
