@@ -5,7 +5,6 @@ process.env.SERVER_HOST = 'localhost';
 process.env.SERVER_PORT = '8080';
 
 describe('Parse string field', function () {
-
   @Config()
   class StringFieldConfig {
     @ConfigField()

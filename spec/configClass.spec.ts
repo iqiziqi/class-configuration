@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { Config, ConfigField, DefaultValue, FromEnv, init } from '../src/main';
 
 describe('Parse config class field', function () {
-
   @Config()
   class DatabaseConfig {
     @ConfigField()

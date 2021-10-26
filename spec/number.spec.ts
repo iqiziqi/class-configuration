@@ -6,7 +6,6 @@ process.env.SERVER_PORT = '8080';
 process.env.NOT_NUMBER_VALUE = 'test';
 
 describe('Parse number field', function () {
-
   @Config()
   class NumberFieldConfig {
     @ConfigField()

@@ -8,7 +8,6 @@ process.env.SHORT_BOOL_FALSE = 'f';
 process.env.NOT_BOOL_VALUE = 'test';
 
 describe('Parse boolean field', function () {
-
   @Config()
   class BooleanFieldConfig {
     @ConfigField()
