@@ -26,17 +26,17 @@ function parseNumber(value: any) {
 /**
  * Set a class to config class.
  */
-export function Config() {
-  return function <T extends { new (...args: any[]): any }>(constructor: T) {
-    Reflect.defineMetadata(CONFIG_CLASS, undefined, constructor);
+export function Config(): ClassDecorator {
+  return function <T extends NewableFunction>(target: T) {
+    Reflect.defineMetadata(CONFIG_CLASS, undefined, target);
   };
 }
 
 /**
  * Set a class field to config item.
  */
-export function ConfigField() {
-  return function (target: any, propertyKey: string) {
+export function ConfigField(): PropertyDecorator {
+  return function (target: object, propertyKey: string | symbol) {
     Reflect.defineMetadata(propertyKey, undefined, target);
   };
 }
@@ -49,9 +49,9 @@ export function ConfigField() {
  *
  * @param name The environment name.
  */
-export function FromEnv(name?: string) {
-  return function (target: any, propertyKey: string) {
-    const value = name ? process.env[name] : process.env[propertyKey];
+export function FromEnv(name?: string): PropertyDecorator {
+  return function (target: object, propertyKey: string | symbol) {
+    const value = name ? process.env[name] : process.env[propertyKey as string];
     Reflect.defineMetadata(CONFIG_ENV_VALUE, value, target, propertyKey);
   };
 }
@@ -62,8 +62,8 @@ export function FromEnv(name?: string) {
  *
  * @param value The default value.
  */
-export function DefaultValue(value: any) {
-  return function (target: any, propertyKey: string) {
+export function DefaultValue(value: any): PropertyDecorator {
+  return function (target: object, propertyKey: string | symbol): void {
     Reflect.defineMetadata(CONFIG_DEFAULT_VALUE, value, target, propertyKey);
   };
 }
