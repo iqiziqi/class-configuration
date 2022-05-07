@@ -1,27 +1,9 @@
 import 'reflect-metadata';
+import { parseNumber, parseBool } from './utils';
 
 const CONFIG_CLASS = Symbol('CONFIG_CLASS');
 const CONFIG_DEFAULT_VALUE = Symbol('CONFIG_DEFAULT_VALUE');
 const CONFIG_ENV_VALUE = Symbol('CONFIG_ENV_VALUE');
-
-/**
- * Parse a value to boolean.
- */
-function parseBool(value: any) {
-  if (typeof value !== 'string') return Boolean(value);
-  if (value.toLowerCase() === 'true' || value.toLowerCase() === 't') return true;
-  if (value.toLowerCase() === 'false' || value.toLowerCase() === 'f') return false;
-  throw new TypeError(`Can't convert type of '${value}' to boolean!`);
-}
-
-/**
- * Parse a value to number.
- */
-function parseNumber(value: any) {
-  const result = Number.parseFloat(value);
-  if (!Number.isNaN(result)) return result;
-  throw new TypeError(`Can't convert type of '${value}' to number!`);
-}
 
 /**
  * Set a class to config class.
