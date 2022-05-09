@@ -7,8 +7,8 @@
   "scripts": {
     "prepare": "husky install",
     "lint": "eslint --config .eslintrc src/*.ts",
-    "test": "nyc mocha",
-    "cover": "nyc report",
+    "cover": "nyc mocha",
+    "report": "nyc report --reporter=lcovonly",
     "build": "tsc -p ./tsconfig.build.json"
   },
   "keywords": [

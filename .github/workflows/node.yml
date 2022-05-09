@@ -36,7 +36,13 @@ jobs:
           run_install: true
       - name: Run lint
         run: pnpm run lint
-      - name: Run test
-        run: pnpm run test
       - name: Run cover
         run: pnpm run cover
+      - name: Run report
+        run: pnpm run report
+      - uses: codecov/codecov-action@v2
+        with:
+          flags: unittests
+          directory: ./coverage
+          files: lcov.info
+          verbose: true
