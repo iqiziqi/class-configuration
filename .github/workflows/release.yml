@@ -2,22 +2,22 @@ name: Release CI
 
 on:
   push:
-    tag:
-      - 'v*'
+    tags:
+      - '**'
 
 jobs:
   publish:
     runs-on: ubuntu-20.04
-    if: ${{ github.ref == 'refs/heads/master' }}
     strategy:
       matrix:
         node-version: [16.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
       - name: Cache pnpm modules
         uses: actions/cache@v2
         with:
@@ -30,20 +30,13 @@ jobs:
         with:
           version: 7.0.1
           run_install: true
-      - name: Get version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-          release_name: ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: false
       - name: Run build
         run: pnpm run build
-      - name: Run publish
-        run: pnpm run publish
+      - name: Exec
+        run: echo $NODE_AUTH_TOKEN
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Run publish
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
