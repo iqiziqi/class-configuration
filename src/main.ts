@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { parseNumber, parseBool } from './utils';
+import { parseNumber, parseBool, toConstance } from './utils';
 
 const CONFIG_CLASS = Symbol('CONFIG_CLASS');
 const CONFIG_DEFAULT_VALUE = Symbol('CONFIG_DEFAULT_VALUE');
@@ -33,7 +33,8 @@ export function ConfigField(): PropertyDecorator {
  */
 export function FromEnv(name?: string): PropertyDecorator {
   return function (target: object, propertyKey: string | symbol) {
-    const value = name ? process.env[name] : process.env[propertyKey as string];
+    const environment = name ?? toConstance(propertyKey as string);
+    const value = process.env[environment];
     Reflect.defineMetadata(CONFIG_ENV_VALUE, value, target, propertyKey);
   };
 }
