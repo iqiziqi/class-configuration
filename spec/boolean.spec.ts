@@ -12,27 +12,27 @@ describe('Parse boolean field', function () {
   class BooleanFieldConfig {
     @ConfigField()
     @FromEnv('NO_BOOL_VALUE')
-    @DefaultValue(false)
+    @DefaultValue('false')
     public noBoolValue!: boolean;
 
     @ConfigField()
     @FromEnv('LONG_BOOL_TRUE')
-    @DefaultValue(false)
+    @DefaultValue('false')
     public longBoolTrue!: boolean;
 
     @ConfigField()
     @FromEnv('SHORT_BOOL_TRUE')
-    @DefaultValue(false)
+    @DefaultValue('false')
     public shortBoolTrue!: boolean;
 
     @ConfigField()
     @FromEnv('LONG_BOOL_FALSE')
-    @DefaultValue(true)
+    @DefaultValue('true')
     public longBoolFalse!: boolean;
 
     @ConfigField()
     @FromEnv('SHORT_BOOL_FALSE')
-    @DefaultValue(true)
+    @DefaultValue('true')
     public shortBoolFalse!: boolean;
   }
 
@@ -40,7 +40,7 @@ describe('Parse boolean field', function () {
   class ErrorBoolConfig {
     @ConfigField()
     @FromEnv('NOT_BOOL_VALUE')
-    @DefaultValue(true)
+    @DefaultValue('true')
     public notBoolValue!: boolean;
   }
 

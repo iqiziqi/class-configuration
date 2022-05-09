@@ -9,7 +9,7 @@ describe('Parse config class field', function () {
     host!: string;
 
     @ConfigField()
-    @DefaultValue(8080)
+    @DefaultValue('8080')
     port!: number;
   }
 
@@ -46,10 +46,7 @@ describe('Parse config class field', function () {
   @Config()
   class ErrorConfigClassFieldWithDefaultValue {
     @ConfigField()
-    @DefaultValue({
-      host: '127.0.0.1',
-      port: 9090,
-    })
+    @DefaultValue(`{ host: '127.0.0.1', port: 9090 }`)
     public database!: DatabaseConfig;
   }
 

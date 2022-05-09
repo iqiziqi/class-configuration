@@ -10,12 +10,12 @@ describe('Parse number field', function () {
   class NumberFieldConfig {
     @ConfigField()
     @FromEnv('SERVER_PORT')
-    @DefaultValue(1000)
+    @DefaultValue('1000')
     public port!: number;
 
     @ConfigField()
     @FromEnv('NO_NUMBER_VALUE')
-    @DefaultValue(8080)
+    @DefaultValue('8080')
     public noNumberValue!: number;
   }
 
@@ -23,7 +23,7 @@ describe('Parse number field', function () {
   class ErrorNumberConfig {
     @ConfigField()
     @FromEnv('NOT_NUMBER_VALUE')
-    @DefaultValue(12)
+    @DefaultValue('12')
     public notNumberType!: number;
   }
 

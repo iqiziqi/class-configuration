@@ -44,7 +44,7 @@ export function FromEnv(name?: string): PropertyDecorator {
  *
  * @param value The default value.
  */
-export function DefaultValue(value: any): PropertyDecorator {
+export function DefaultValue(value: string): PropertyDecorator {
   return function (target: object, propertyKey: string | symbol): void {
     Reflect.defineMetadata(CONFIG_DEFAULT_VALUE, value, target, propertyKey);
   };
