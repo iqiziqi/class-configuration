@@ -3,8 +3,6 @@ import { Config, ConfigField, DefaultValue, FromEnv, init } from '../src/main';
 
 describe('@DefaultValue', function () {
   it('should get default field', function () {
-    process.env.SERVER_PORT = '8080';
-
     @Config()
     class DatabaseConfig {
       @ConfigField()
@@ -19,6 +17,8 @@ describe('@DefaultValue', function () {
       @DefaultValue('true')
       public logging!: boolean;
     }
+
+    process.env.SERVER_PORT = '8080';
 
     const config = init(new DatabaseConfig());
     expect(config.host).equal('localhost');
@@ -49,10 +49,6 @@ describe('@DefaultValue', function () {
   });
 
   it('should be override by environment', function () {
-    process.env.HOST = '0.0.0.0';
-    process.env.PORT = '7890';
-    process.env.LOGGING = 'false';
-
     @Config()
     class DatabaseConfig {
       @ConfigField()
@@ -70,6 +66,10 @@ describe('@DefaultValue', function () {
       @DefaultValue('true')
       public logging!: boolean;
     }
+
+    process.env.HOST = '0.0.0.0';
+    process.env.PORT = '7890';
+    process.env.LOGGING = 'false';
 
     const databaseConfig = init(new DatabaseConfig());
     expect(databaseConfig.host).equal('0.0.0.0');

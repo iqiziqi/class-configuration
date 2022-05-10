@@ -21,10 +21,10 @@ describe('Utils', function () {
     });
 
     it('should parse a number to boolean', function () {
-      expect(parseNumber(0)).equal(0);
-      expect(parseNumber(1)).equal(1);
-      expect(parseNumber(100)).equal(100);
-      expect(parseNumber(-1)).equal(-1);
+      expect(parseNumber('0')).equal(0);
+      expect(parseNumber('1')).equal(1);
+      expect(parseNumber('100')).equal(100);
+      expect(parseNumber('-1')).equal(-1);
     });
   });
 
@@ -49,11 +49,11 @@ describe('Utils', function () {
       expect(() => parseBool('a.12')).throws(`Can't convert type of 'a.12' to boolean!`);
     });
 
-    it('should parse a number to boolean', function () {
-      expect(parseBool(0)).equal(false);
-      expect(parseBool(1)).equal(true);
-      expect(parseBool(100)).equal(true);
-      expect(parseBool(-1)).equal(true);
+    it('should throw error when parse a number to boolean', function () {
+      expect(() => parseBool('0')).throws(`Can't convert type of '0' to boolean`);
+      expect(() => parseBool('1')).throws(`Can't convert type of '1' to boolean`);
+      expect(() => parseBool('100')).throws(`Can't convert type of '100' to boolean`);
+      expect(() => parseBool('-1')).throws(`Can't convert type of '-1' to boolean`);
     });
   });
 

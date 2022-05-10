@@ -1,11 +1,8 @@
 import { expect } from 'chai';
-import { Config, ConfigField, FromEnv, DefaultValue, init } from '../src/main';
+import { Config, ConfigField, FromEnv, init } from '../src/main';
 
 describe('@FromEnv', function () {
   it('should get number field from environment', function () {
-    process.env.SERVER_PORT = '8080';
-    process.env.PRICE = '12.8';
-
     @Config()
     class DatabaseConfig {
       @ConfigField()
@@ -20,6 +17,9 @@ describe('@FromEnv', function () {
       public price!: number;
     }
 
+    process.env.SERVER_PORT = '8080';
+    process.env.PRICE = '12.8';
+
     const databaseConfig = init(new DatabaseConfig());
     expect(databaseConfig.port).equal(8080);
     const priceConfig = init(new PriceConfig());
@@ -27,8 +27,6 @@ describe('@FromEnv', function () {
   });
 
   it('should get string field from environment', function () {
-    process.env.SERVER_HOST = 'localhost';
-
     @Config()
     class DatabaseConfig {
       @ConfigField()
@@ -36,16 +34,13 @@ describe('@FromEnv', function () {
       public host!: string;
     }
 
+    process.env.SERVER_HOST = 'localhost';
+
     const databaseConfig = init(new DatabaseConfig());
     expect(databaseConfig.host).equal('localhost');
   });
 
   it('should get boolean field from environment by long string', function () {
-    process.env.SERVER_1_LOGGING = 'false';
-    process.env.SERVER_1_PROCESS = 'true';
-    process.env.SERVER_2_LOGGING = 'FALSE';
-    process.env.SERVER_2_PROCESS = 'TRUE';
-
     @Config()
     class DatabaseConfigOne {
       @ConfigField()
@@ -67,6 +62,11 @@ describe('@FromEnv', function () {
       @FromEnv('SERVER_2_PROCESS')
       public process!: boolean;
     }
+
+    process.env.SERVER_1_LOGGING = 'false';
+    process.env.SERVER_1_PROCESS = 'true';
+    process.env.SERVER_2_LOGGING = 'FALSE';
+    process.env.SERVER_2_PROCESS = 'TRUE';
 
     const config1 = init(new DatabaseConfigOne());
     expect(config1.logging).equal(false);
@@ -77,11 +77,6 @@ describe('@FromEnv', function () {
   });
 
   it('should get boolean field from environment by short string', function () {
-    process.env.SERVER_1_LOGGING = 'f';
-    process.env.SERVER_1_PROCESS = 't';
-    process.env.SERVER_2_LOGGING = 'F';
-    process.env.SERVER_2_PROCESS = 'T';
-
     @Config()
     class DatabaseConfigOne {
       @ConfigField()
@@ -104,6 +99,11 @@ describe('@FromEnv', function () {
       public process!: boolean;
     }
 
+    process.env.SERVER_1_LOGGING = 'f';
+    process.env.SERVER_1_PROCESS = 't';
+    process.env.SERVER_2_LOGGING = 'F';
+    process.env.SERVER_2_PROCESS = 'T';
+
     const config1 = init(new DatabaseConfigOne());
     expect(config1.logging).equal(false);
     expect(config1.process).equal(true);
@@ -113,21 +113,19 @@ describe('@FromEnv', function () {
   });
 
   it('should throw a error when value is not number type', function () {
-    process.env.SERVER_PORT = 'localhost';
-
     @Config()
     class DatabaseConfig {
       @ConfigField()
       @FromEnv('SERVER_PORT')
       public prot!: number;
     }
+
+    process.env.SERVER_PORT = 'localhost';
 
     expect(() => init(new DatabaseConfig())).throws(`Can't convert type of '${process.env.SERVER_PORT}' to number!`);
   });
 
   it('should throw a error when value is not number type', function () {
-    process.env.SERVER_PORT = 'localhost';
-
     @Config()
     class DatabaseConfig {
       @ConfigField()
@@ -135,13 +133,12 @@ describe('@FromEnv', function () {
       public prot!: number;
     }
 
+    process.env.SERVER_PORT = 'localhost';
+
     expect(() => init(new DatabaseConfig())).throws(`Can't convert type of '${process.env.SERVER_PORT}' to number!`);
   });
 
   it('should throw a error when value is not boolean type', function () {
-    process.env.LOGGING = 'yes';
-    process.env.PROCESS = 'no';
-
     @Config()
     class DatabaseConfig {
       @ConfigField()
@@ -156,16 +153,14 @@ describe('@FromEnv', function () {
       public process!: boolean;
     }
 
+    process.env.LOGGING = 'yes';
+    process.env.PROCESS = 'no';
+
     expect(() => init(new DatabaseConfig())).throws(`Can't convert type of '${process.env.LOGGING}' to boolean!`);
     expect(() => init(new ProcessConfig())).throws(`Can't convert type of '${process.env.PROCESS}' to boolean!`);
   });
 
   it('should get config field by default field name', function () {
-    process.env.SERVER_NAME = 'test';
-    process.env.HOST = 'localhost';
-    process.env.PORT = '8080';
-    process.env.LOGGING = 'true';
-
     @Config()
     class DatabaseConfig {
       @ConfigField()
@@ -184,6 +179,11 @@ describe('@FromEnv', function () {
       @FromEnv()
       public logging!: boolean;
     }
+
+    process.env.SERVER_NAME = 'test';
+    process.env.HOST = 'localhost';
+    process.env.PORT = '8080';
+    process.env.LOGGING = 'true';
 
     const config = init(new DatabaseConfig());
     expect(config.serverName).equal('test');

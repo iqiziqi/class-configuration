@@ -2,7 +2,6 @@
  * Parse a value to boolean.
  */
 export function parseBool(value: string) {
-  if (typeof value !== 'string') return Boolean(value);
   if (value.toLowerCase() === 'true' || value.toLowerCase() === 't') return true;
   if (value.toLowerCase() === 'false' || value.toLowerCase() === 'f') return false;
   throw new TypeError(`Can't convert type of '${value}' to boolean!`);

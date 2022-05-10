@@ -3,7 +3,7 @@ import { parseNumber, parseBool, toConstance } from './utils';
 
 const CONFIG_CLASS = Symbol('CONFIG_CLASS');
 const CONFIG_DEFAULT_VALUE = Symbol('CONFIG_DEFAULT_VALUE');
-const CONFIG_ENV_VALUE = Symbol('CONFIG_ENV_VALUE');
+const CONFIG_ENV_NAME = Symbol('CONFIG_ENV_VALUE');
 
 /**
  * Set a class to config class.
@@ -34,8 +34,7 @@ export function ConfigField(): PropertyDecorator {
 export function FromEnv(name?: string): PropertyDecorator {
   return function (target: object, propertyKey: string | symbol) {
     const environment = name ?? toConstance(propertyKey as string);
-    const value = process.env[environment];
-    Reflect.defineMetadata(CONFIG_ENV_VALUE, value, target, propertyKey);
+    Reflect.defineMetadata(CONFIG_ENV_NAME, environment, target, propertyKey);
   };
 }
 
@@ -61,25 +60,26 @@ export function init<T>(instance: T) {
   const keys = Reflect.getMetadataKeys(instance);
   for (const key of keys) {
     const filedType = Reflect.getMetadata('design:type', instance, key);
-    const valueFromEnv = Reflect.getMetadata(CONFIG_ENV_VALUE, instance, key);
+    const valueEnvName = Reflect.getMetadata(CONFIG_ENV_NAME, instance, key);
+    const valueFromEnv = process.env[valueEnvName];
     const valueFromDefault = Reflect.getMetadata(CONFIG_DEFAULT_VALUE, instance, key);
     const nativeValue = valueFromEnv ?? valueFromDefault;
     switch (true) {
       case filedType === String:
-        (instance as any)[key] = nativeValue;
+        (instance as Record<string, unknown>)[key] = nativeValue;
         break;
       case filedType === Number:
-        (instance as any)[key] = parseNumber(nativeValue);
+        (instance as Record<string, unknown>)[key] = parseNumber(nativeValue);
         break;
       case filedType === Boolean:
-        (instance as any)[key] = parseBool(nativeValue);
+        (instance as Record<string, unknown>)[key] = parseBool(nativeValue);
         break;
       case typeof filedType === 'function' && Reflect.hasMetadata(CONFIG_CLASS, filedType):
         if (Reflect.hasMetadata(CONFIG_DEFAULT_VALUE, instance, key))
           throw new TypeError(`Config class field '${key}' can't set default value`);
-        if (Reflect.hasMetadata(CONFIG_ENV_VALUE, instance, key))
+        if (Reflect.hasMetadata(CONFIG_ENV_NAME, instance, key))
           throw new TypeError(`Config class field '${key}' can't set environment value`);
-        (instance as any)[key] = init(new filedType());
+        (instance as Record<string, unknown>)[key] = init(new filedType());
         break;
       default:
         const typeName = filedType?.name ? `: '${filedType.name}'` : '';
