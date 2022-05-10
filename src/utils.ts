@@ -1,7 +1,7 @@
 /**
  * Parse a value to boolean.
  */
-export function parseBool(value: any) {
+export function parseBool(value: string) {
   if (typeof value !== 'string') return Boolean(value);
   if (value.toLowerCase() === 'true' || value.toLowerCase() === 't') return true;
   if (value.toLowerCase() === 'false' || value.toLowerCase() === 'f') return false;
@@ -11,7 +11,7 @@ export function parseBool(value: any) {
 /**
  * Parse a value to number.
  */
-export function parseNumber(value: any) {
+export function parseNumber(value: string) {
   const result = Number(value);
   if (!Number.isNaN(result)) return result;
   throw new TypeError(`Can't convert type of '${value}' to number!`);
