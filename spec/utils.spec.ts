@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { parseBool, parseNumber, toConstance } from '../src/utils';
+import { parseBool, parseNumber, changeToConstanceCase } from '../src/utils';
 
 describe('Utils', function () {
   describe('Utils.parseNumber', function () {
@@ -57,17 +57,26 @@ describe('Utils', function () {
     });
   });
 
-  describe('Utils.toConstance', function () {
-    it('should change a word to constance', function () {
-      expect(toConstance('value')).equal('VALUE');
-      expect(toConstance('testName')).equal('TEST_NAME');
-      expect(toConstance('TestName')).equal('TEST_NAME');
-      expect(toConstance('test_name')).equal('TEST_NAME');
-      expect(toConstance('_TestName')).equal('TEST_NAME');
-      expect(toConstance('_Test_Name')).equal('TEST_NAME');
-      expect(toConstance('_Test_name')).equal('TEST_NAME');
-      expect(toConstance('_Test___name')).equal('TEST___NAME');
-      expect(toConstance('____Test_name')).equal('TEST_NAME');
+  describe('Utils.changeToConstanceCase', function () {
+    it('should change words from camel to constance case', function () {
+      expect(changeToConstanceCase('value')).equal('VALUE');
+      expect(changeToConstanceCase('testName')).equal('TEST_NAME');
+    });
+
+    it('should change words from pascal like to constance case', function () {
+      expect(changeToConstanceCase('TestName')).equal('TEST_NAME');
+      expect(changeToConstanceCase('_TestName')).equal('TEST_NAME');
+    });
+
+    it('should change words from snake like to constance case', function () {
+      expect(changeToConstanceCase('test_name')).equal('TEST_NAME');
+      expect(changeToConstanceCase('_Test_Name')).equal('TEST_NAME');
+      expect(changeToConstanceCase('_Test_name')).equal('TEST_NAME');
+    });
+
+    it('should change works from another case to constance case', function () {
+      expect(changeToConstanceCase('_Test___name')).equal('TEST___NAME');
+      expect(changeToConstanceCase('____Test_name')).equal('TEST_NAME');
     });
   });
 });

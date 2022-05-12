@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { Config, ConfigField, DefaultValue, FromEnv, init } from '../src/main';
+import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src/main';
 
 describe('@DefaultValue', function () {
   it('should get default field', function () {
     @Config()
-    class DatabaseConfig {
+    class DatabaseConfig extends BaseConfig {
       @ConfigField()
       @DefaultValue('localhost')
       public host!: string;
@@ -20,7 +20,7 @@ describe('@DefaultValue', function () {
 
     process.env.SERVER_PORT = '8080';
 
-    const config = init(new DatabaseConfig());
+    const config = DatabaseConfig.init<DatabaseConfig>();
     expect(config.host).equal('localhost');
     expect(config.port).equal(8080);
     expect(config.logging).equal(true);
@@ -28,29 +28,29 @@ describe('@DefaultValue', function () {
 
   it('should throw a error when value is not number type', function () {
     @Config()
-    class ErrorNumberConfig {
+    class ErrorNumberConfig extends BaseConfig {
       @ConfigField()
       @DefaultValue('12.a')
       public notNumberType!: number;
     }
 
-    expect(() => init(new ErrorNumberConfig())).throws(`Can't convert type of '12.a' to number!`);
+    expect(() => ErrorNumberConfig.init<ErrorNumberConfig>()).throws(`Can't convert type of '12.a' to number!`);
   });
 
   it('should throw a error when value is not boolean type', function () {
     @Config()
-    class ErrorBoolConfig {
+    class ErrorBoolConfig extends BaseConfig {
       @ConfigField()
       @DefaultValue('yes')
       public notBoolValue!: boolean;
     }
 
-    expect(() => init(new ErrorBoolConfig())).throws(`Can't convert type of 'yes' to boolean!`);
+    expect(() => ErrorBoolConfig.init<ErrorBoolConfig>()).throws(`Can't convert type of 'yes' to boolean!`);
   });
 
   it('should be override by environment', function () {
     @Config()
-    class DatabaseConfig {
+    class DatabaseConfig extends BaseConfig {
       @ConfigField()
       @FromEnv('HOST')
       @DefaultValue('localhost')
@@ -71,7 +71,7 @@ describe('@DefaultValue', function () {
     process.env.PORT = '7890';
     process.env.LOGGING = 'false';
 
-    const databaseConfig = init(new DatabaseConfig());
+    const databaseConfig = DatabaseConfig.init<DatabaseConfig>();
     expect(databaseConfig.host).equal('0.0.0.0');
     expect(databaseConfig.port).equal(7890);
     expect(databaseConfig.logging).equal(false);

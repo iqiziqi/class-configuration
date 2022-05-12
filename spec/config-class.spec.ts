@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { Config, ConfigField, DefaultValue, FromEnv, init } from '../src/main';
+import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src/main';
 
-describe('Parse config class field', function () {
+describe('@Config', function () {
   it('should get config class field by default values', function () {
     @Config()
-    class DatabaseConfig {
+    class DatabaseConfig extends BaseConfig {
       @ConfigField()
       @DefaultValue('localhost')
       host!: string;
@@ -14,7 +14,7 @@ describe('Parse config class field', function () {
     }
 
     @Config()
-    class RedisConfig {
+    class RedisConfig extends BaseConfig {
       @ConfigField()
       @DefaultValue('127.0.0.1')
       host!: string;
@@ -24,49 +24,43 @@ describe('Parse config class field', function () {
     }
 
     @Config()
-    class ConfigClassFieldConfig {
+    class ConfigClassFieldConfig extends BaseConfig {
       @ConfigField()
       public database!: DatabaseConfig;
       @ConfigField()
       public redis!: RedisConfig;
     }
 
-    const config = init(new ConfigClassFieldConfig());
-    expect(config.database).deep.equal({
-      host: 'localhost',
-      port: 8080,
-    });
-    expect(config.redis).deep.equal({
-      host: '127.0.0.1',
-      port: 1188,
-    });
+    const config = ConfigClassFieldConfig.init<ConfigClassFieldConfig>();
+    expect(config.database.host).equal('localhost');
+    expect(config.database.port).equal(8080);
+    expect(config.redis.host).equal('127.0.0.1');
+    expect(config.redis.port).equal(1188);
   });
 
   it('should get config class field by environment', function () {
     @Config()
-    class DatabaseConfig {
+    class DatabaseConfig extends BaseConfig {
       @ConfigField()
       @FromEnv('SERVER_HOST')
       host!: string;
-
       @ConfigField()
       @FromEnv('SERVER_PORT')
       port!: number;
     }
 
     @Config()
-    class RedisConfig {
+    class RedisConfig extends BaseConfig {
       @ConfigField()
       @FromEnv('REDIS_HOST')
       host!: string;
-
       @ConfigField()
       @FromEnv('REDIS_PORT')
       port!: number;
     }
 
     @Config()
-    class ConfigClassFieldConfig {
+    class ClassConfig extends BaseConfig {
       @ConfigField()
       public database!: DatabaseConfig;
       @ConfigField()
@@ -78,108 +72,36 @@ describe('Parse config class field', function () {
     process.env.REDIS_HOST = '127.0.0.1';
     process.env.REDIS_PORT = '1188';
 
-    const config = init(new ConfigClassFieldConfig());
-    expect(config.database).deep.equal({
-      host: 'localhost',
-      port: 8080,
-    });
-    expect(config.redis).deep.equal({
-      host: '127.0.0.1',
-      port: 1188,
-    });
+    const config = ClassConfig.init<ClassConfig>();
+    expect(config.database.host).equal('localhost');
+    expect(config.database.port).equal(8080);
+    expect(config.redis.host).equal('127.0.0.1');
+    expect(config.redis.port).equal(1188);
   });
 
-  it('should throw an error when field is not a constructor', function () {
-    @Config()
-    class ErrorConfigClassFieldOfNeverConfig {
+  it('should throw an error when class is not a config class', function () {
+    class ErrorConfig extends BaseConfig {
       @ConfigField()
-      public error!: never;
+      public name!: string;
     }
-    expect(() => init(new ErrorConfigClassFieldOfNeverConfig())).throws(
-      `From instance 'error' get a not support type.`,
-    );
+    expect(() => ErrorConfig.init<ErrorConfig>()).throw(`The class 'ErrorConfig' is not a config class.`);
   });
 
   it('should throw an error when field is not a config class', function () {
-    @Config()
-    class ErrorConfigClassFieldOfArrayConfig {
-      @ConfigField()
-      public error!: Array<string>;
-    }
-    expect(() => init(new ErrorConfigClassFieldOfArrayConfig())).throws(
-      `From instance 'error' get a not support type: 'Array'.`,
-    );
-
-    @Config()
-    class ErrorConfigClassFieldOfAnyConfig {
-      @ConfigField()
-      public error!: any;
-    }
-    expect(() => init(new ErrorConfigClassFieldOfAnyConfig())).throws(
-      `From instance 'error' get a not support type: 'Object'.`,
-    );
-
-    @Config()
     class DatabaseConfig {
       @ConfigField()
-      @DefaultValue('localhost')
-      host!: string;
-
+      public host!: string;
       @ConfigField()
-      @DefaultValue('8080')
-      port!: number;
+      public port!: string;
     }
-    @Config()
-    class ErrorConfigClassFieldOfPartialConfig {
-      @ConfigField()
-      public error!: Partial<DatabaseConfig>;
-    }
-    expect(() => init(new ErrorConfigClassFieldOfPartialConfig())).throws(
-      `From instance 'error' get a not support type: 'Object'.`,
-    );
-  });
 
-  it('should throw an error when config class set default value', function () {
     @Config()
-    class DatabaseConfig {
+    class ErrorConfig extends BaseConfig {
       @ConfigField()
-      @DefaultValue('localhost')
-      host!: string;
-
-      @ConfigField()
-      @DefaultValue('8080')
-      port!: number;
-    }
-    @Config()
-    class ErrorConfigClassFieldWithDefaultValue {
-      @ConfigField()
-      @DefaultValue(`{ host: '127.0.0.1', port: 9090 }`)
       public database!: DatabaseConfig;
     }
-    expect(() => init(new ErrorConfigClassFieldWithDefaultValue())).throws(
-      `Config class field 'database' can't set default value`,
-    );
-  });
-
-  it('should throw an error when config class set environment value', function () {
-    @Config()
-    class DatabaseConfig {
-      @ConfigField()
-      @DefaultValue('localhost')
-      host!: string;
-
-      @ConfigField()
-      @DefaultValue('8080')
-      port!: number;
-    }
-    @Config()
-    class ErrorConfigClassFieldWithEnvValue {
-      @ConfigField()
-      @FromEnv('test')
-      public database!: DatabaseConfig;
-    }
-    expect(() => init(new ErrorConfigClassFieldWithEnvValue())).throws(
-      `Config class field 'database' can't set environment value`,
+    expect(() => ErrorConfig.init<ErrorConfig>()).throw(
+      `From instance 'database' get an unsupported type: 'DatabaseConfig'.`,
     );
   });
 });

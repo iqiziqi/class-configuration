@@ -1,3 +1,5 @@
+import { Constructor, IParserExt } from './defines';
+
 /**
  * Parse a value to boolean.
  */
@@ -17,11 +19,28 @@ export function parseNumber(value: string) {
 }
 
 /**
- * Change a work from camel to constance.
+ * Change words from camel to constance case.
  */
-export function toConstance(source: string) {
+export function changeToConstanceCase(source: string) {
   return source
     .replace(/_?([A-Z])/g, (_, str) => `_${str}`)
     .replace(/^_*/, '')
     .toUpperCase();
+}
+
+/**
+ * The default value parser.
+ */
+export function parse<T>(value: string, ext: IParserExt<T>) {
+  const { fieldType, fieldName } = ext;
+  switch (true) {
+    case fieldType === (String as Constructor<unknown>):
+      return value;
+    case fieldType === (Number as Constructor<unknown>):
+      return parseNumber(value);
+    case fieldType === (Boolean as Constructor<unknown>):
+      return parseBool(value);
+    default:
+      throw new TypeError(`From instance '${fieldName}' get an unsupported type: '${fieldType.name}'.`);
+  }
 }
