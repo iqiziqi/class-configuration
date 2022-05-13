@@ -18,6 +18,7 @@ specifiers:
   nyc: ^15.1.0
   prettier: ^2.6.2
   reflect-metadata: ^0.1.13
+  rimraf: ^3.0.2
   ts-node: ^10.7.0
   typescript: ^4.6.4
 
@@ -39,6 +40,7 @@ devDependencies:
   nyc: 15.1.0
   prettier: 2.6.2
   reflect-metadata: 0.1.13
+  rimraf: 3.0.2
   ts-node: 10.7.0_ixcth6kbstn6no7hiktnzckliq
   typescript: 4.6.4
 
@@ -202,6 +204,8 @@ packages:
     resolution: {integrity: sha512-n2Q6i+fnJqzOaq2VkdXxy2TCPCWQZHiCo0XqmrCvDWcZQKRyZzYi4Z0yxlBuN0w+r2ZHmre+Q087DSrw3pbJDQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.10
     dev: true
 
   /@babel/template/7.16.7:

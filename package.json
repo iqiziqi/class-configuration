@@ -1,6 +1,6 @@
 {
   "name": "class-configuration",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "The config package to define and read the configuration",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
@@ -9,7 +9,7 @@
     "lint": "eslint --fix --config .eslintrc src/*.ts spec/*.ts",
     "cover": "nyc mocha",
     "report": "nyc report --reporter=lcovonly",
-    "build": "tsc -p ./tsconfig.build.json"
+    "build": "rimraf dist && tsc -p ./tsconfig.build.json"
   },
   "keywords": [
     "class",
@@ -37,11 +37,11 @@
     "nyc": "^15.1.0",
     "prettier": "^2.6.2",
     "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
   },
   "files": [
-    "src/*",
     "dist/*.js",
     "dist/*.d.ts"
   ]
