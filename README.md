@@ -31,10 +31,10 @@ First, You can use `@Config` define your configuration class. Next, use `@Config
 
 ```ts
 import 'reflect-metadata';
-import { Config, ConfigField, DefaultValue, FromEnv, init } from 'configs';
+import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv, init } from 'class-configuration';
 
 @Config()
-class Configuration {
+class Configuration extends BaseConfig {
   /**
    * The server host
    */
@@ -57,13 +57,13 @@ For example:
 
 ```ts
 import 'reflect-metadata';
-import { Config, ConfigField, DefaultValue, FromEnv, init } from 'configs';
+import { BaseConfig Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
 
 process.env.SERVER_HOST = 'localhost';
 process.env.SERVER_PORT = '8080';
 
 @Config()
-class Configuration {
+class Configuration extends BaseConfig {
   /**
    * The server host
    */
@@ -80,14 +80,14 @@ class Configuration {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = init(new Configuration());
+const configuration = Configuration.init<Configuration>();
 ```
 
 If have no params set, Will use field name.
 
 ```ts
 import 'reflect-metadata';
-import { Config, ConfigField, DefaultValue, FromEnv, init } from 'configs';
+import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
 
 process.env.SERVER_HOST = 'localhost';
 process.env.SERVER_PORT = '8080';
@@ -110,7 +110,7 @@ class Configuration {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = init(new Configuration());
+const configuration = Configuration.init<Configuration>();
 ```
 
 ### Load config with default value
@@ -121,10 +121,10 @@ For example:
 
 ```ts
 import 'reflect-metadata';
-import { Config, ConfigField, DefaultValue, FromEnv, init } from 'configs';
+import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
 
 @Config()
-class Configuration {
+class Configuration extends BaseConfig {
   /**
    * The server host
    */
@@ -141,17 +141,17 @@ class Configuration {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = init(new Configuration());
+const configuration = Configuration.init<Configuration>();
 ```
 
 ### Basic
 
 ```ts
 import 'reflect-metadata';
-import { Config, ConfigField, DefaultValue, FromEnv, init } from 'configs';
+import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
 
 @Config()
-class Configuration {
+class Configuration extends BaseConfig {
   /**
    * The server host
    */
@@ -170,17 +170,17 @@ class Configuration {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = init(new Configuration());
+const configuration = Configuration.init<Configuration>();
 ```
 
 ### Class config
 
 ```ts
 import 'reflect-metadata';
-import { Config, ConfigField, DefaultValue, FromEnv, init } from 'configs';
+import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
 
 @Config()
-class Database {
+class Database extends BaseConfig {
   /**
    * The server host
    */
@@ -200,7 +200,6 @@ class Database {
 
 @Config()
 class Configuration {
-
   /**
    * Database config
    */
@@ -209,5 +208,29 @@ class Configuration {
 }
 
 // configuration = { "database: { "host": "localhost", "port": 8080 } }
-const configuration = init(new Configuration());
+const configuration = Configuration.init<Configuration>();
 ```
+
+### Customize parser
+
+You can customize a field's parser by `@ClassField`
+
+```ts
+@Config()
+class DatabaseConfig extends BaseConfig {
+  /**
+   * Database hosts
+   */
+  @ConfigField({
+    parser: (value) => value.split(','),
+  })
+  @FromEnv()
+  public hosts!: string[];
+}
+
+// configuration = { "hosts": ["127.0.0.1", "127.0.0.2"] }
+const configuration = DatabaseConfig.init<DatabaseConfig>();
+```
+
+> Notice: This package does not check the type of the return value of the custom parser.
+> If you want change it, please use `class-validator`.
