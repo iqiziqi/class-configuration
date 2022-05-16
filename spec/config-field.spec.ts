@@ -77,7 +77,7 @@ describe('@ConfigField', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField({
-        parser: (value) => value.split(','),
+        parser: (value) => value?.split(','),
       })
       @FromEnv()
       public hosts!: string[];
@@ -86,7 +86,7 @@ describe('@ConfigField', function () {
     @Config()
     class RedisConfig extends BaseConfig {
       @ConfigField({
-        parser: JSON.parse,
+        parser: (value) => (value ? JSON.parse(value) : undefined),
       })
       @FromEnv()
       public server!: { host: string; port: number };
@@ -95,7 +95,7 @@ describe('@ConfigField', function () {
     @Config()
     class ServerConfig extends BaseConfig {
       @ConfigField({
-        parser: JSON.parse,
+        parser: (value) => (value ? JSON.parse(value) : undefined),
       })
       @FromEnv()
       public servers!: { host: string }[];
@@ -113,11 +113,24 @@ describe('@ConfigField', function () {
     expect(serverConfig.servers).deep.equal([{ host: 'localhost' }, { host: '127.0.0.1' }]);
   });
 
+  it('should get undefined config field by customized parser', function () {
+    @Config()
+    class DatabaseConfig extends BaseConfig {
+      @ConfigField({
+        parser: (value) => value?.split(','),
+      })
+      public hosts?: string[];
+    }
+
+    const databaseConfig = DatabaseConfig.init<DatabaseConfig>();
+    expect(databaseConfig.hosts).equal(undefined);
+  });
+
   it('should get config field by customized parser and default parser', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField({
-        parser: (value) => value.split(','),
+        parser: (value) => value?.split(','),
       })
       @FromEnv()
       public hosts!: string[];
@@ -139,7 +152,7 @@ describe('@ConfigField', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField({
-        parser: (value) => value.split(','),
+        parser: (value) => value?.split(','),
       })
       @FromEnv()
       public hosts!: string;

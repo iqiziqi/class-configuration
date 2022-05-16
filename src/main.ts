@@ -79,27 +79,25 @@ export function init<T extends object>(constructor: Constructor<T>) {
     throw new Error(`The class '${constructor.name}' is not a config class.`);
   }
   const instance = new constructor();
-  const keys = Reflect.getMetadataKeys(instance) as Array<keyof T>;
-  keys.forEach((instanceKey) => {
-    const key = instanceKey as string;
-    const fieldType = Reflect.getMetadata('design:type', instance, key);
-    const valueEnvName = Reflect.getMetadata(CONFIG_ENV_NAME, instance, key);
+  const fieldNames = Reflect.getMetadataKeys(instance) as Array<keyof T>;
+  fieldNames.forEach((fieldName) => {
+    const fieldKey = fieldName as string;
+    const fieldType = Reflect.getMetadata('design:type', instance, fieldKey);
+    const valueEnvName = Reflect.getMetadata(CONFIG_ENV_NAME, instance, fieldKey);
     const valueFromEnv = process.env[valueEnvName];
-    const nativeValue = valueFromEnv ?? Reflect.getMetadata(CONFIG_DEFAULT_VALUE, instance, key);
+    const nativeValue = valueFromEnv ?? Reflect.getMetadata(CONFIG_DEFAULT_VALUE, instance, fieldKey);
 
     if (typeof fieldType === 'function' && Reflect.hasMetadata(CONFIG_CLASS, fieldType)) {
-      if (Reflect.hasMetadata(CONFIG_DEFAULT_VALUE, instance, key))
-        throw new Error(`Config class field '${key}' can't set default value`);
-      if (Reflect.hasMetadata(CONFIG_ENV_NAME, instance, key))
-        throw new Error(`Config class field '${key}' can't set environment value`);
-      instance[instanceKey] = BaseConfig.init(fieldType);
+      if (Reflect.hasMetadata(CONFIG_DEFAULT_VALUE, instance, fieldKey))
+        throw new Error(`Config class field '${fieldKey}' can't set default value`);
+      if (Reflect.hasMetadata(CONFIG_ENV_NAME, instance, fieldKey))
+        throw new Error(`Config class field '${fieldKey}' can't set environment value`);
+      instance[fieldName] = BaseConfig.init(fieldType);
     } else {
-      instance[instanceKey] =
-        Reflect.getMetadata(CONFIG_FIELD_PARSER, instance, key)?.(nativeValue) ??
-        parse<T>(nativeValue, {
-          fieldType,
-          fieldName: instanceKey,
-        });
+      const customizeParser = Reflect.getMetadata(CONFIG_FIELD_PARSER, instance, fieldKey);
+      instance[fieldName] = customizeParser
+        ? customizeParser(nativeValue)
+        : parse<T>(nativeValue, { fieldType, fieldName });
     }
   });
   return instance;

@@ -14,5 +14,5 @@ export interface IParserExt<T extends BaseConfig> {
 }
 
 export interface IConfigFieldOptions {
-  parser: (value: string) => unknown;
+  parser: (value?: string) => unknown;
 }
