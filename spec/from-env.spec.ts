@@ -1,8 +1,8 @@
-import { expect } from 'chai';
+import { expect } from 'expect';
 import { BaseConfig, Config, ConfigField, FromEnv } from '../src/main';
 
 describe('@FromEnv', function () {
-  it('should get number field from environment', function () {
+  it('should get number field from environment', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -20,13 +20,13 @@ describe('@FromEnv', function () {
     process.env.SERVER_PORT = '8080';
     process.env.PRICE = '12.8';
 
-    const databaseConfig = DatabaseConfig.init<DatabaseConfig>();
-    expect(databaseConfig.port).equal(8080);
-    const priceConfig = PriceConfig.init<PriceConfig>();
-    expect(priceConfig.price).equal(12.8);
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    expect(databaseConfig.port).toBe(8080);
+    const priceConfig = await PriceConfig.init<PriceConfig>();
+    expect(priceConfig.price).toBe(12.8);
   });
 
-  it('should get string field from environment', function () {
+  it('should get string field from environment', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -36,11 +36,11 @@ describe('@FromEnv', function () {
 
     process.env.SERVER_HOST = 'localhost';
 
-    const databaseConfig = DatabaseConfig.init<DatabaseConfig>();
-    expect(databaseConfig.host).equal('localhost');
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    expect(databaseConfig.host).toBe('localhost');
   });
 
-  it('should get boolean field from environment by long string', function () {
+  it('should get boolean field from environment by long string', async function () {
     @Config()
     class DatabaseConfigOne extends BaseConfig {
       @ConfigField()
@@ -68,15 +68,15 @@ describe('@FromEnv', function () {
     process.env.SERVER_2_LOGGING = 'FALSE';
     process.env.SERVER_2_PROCESS = 'TRUE';
 
-    const config1 = DatabaseConfigOne.init<DatabaseConfigOne>();
-    expect(config1.logging).equal(false);
-    expect(config1.process).equal(true);
-    const config2 = DatabaseConfigTwo.init<DatabaseConfigTwo>();
-    expect(config2.logging).equal(false);
-    expect(config2.process).equal(true);
+    const config1 = await DatabaseConfigOne.init<DatabaseConfigOne>();
+    expect(config1.logging).toBe(false);
+    expect(config1.process).toBe(true);
+    const config2 = await DatabaseConfigTwo.init<DatabaseConfigTwo>();
+    expect(config2.logging).toBe(false);
+    expect(config2.process).toBe(true);
   });
 
-  it('should get boolean field from environment by short string', function () {
+  it('should get boolean field from environment by short string', async function () {
     @Config()
     class DatabaseConfigOne extends BaseConfig {
       @ConfigField()
@@ -104,15 +104,15 @@ describe('@FromEnv', function () {
     process.env.SERVER_2_LOGGING = 'F';
     process.env.SERVER_2_PROCESS = 'T';
 
-    const config1 = DatabaseConfigOne.init<DatabaseConfigOne>();
-    expect(config1.logging).equal(false);
-    expect(config1.process).equal(true);
-    const config2 = DatabaseConfigTwo.init<DatabaseConfigTwo>();
-    expect(config2.logging).equal(false);
-    expect(config2.process).equal(true);
+    const config1 = await DatabaseConfigOne.init<DatabaseConfigOne>();
+    expect(config1.logging).toBe(false);
+    expect(config1.process).toBe(true);
+    const config2 = await DatabaseConfigTwo.init<DatabaseConfigTwo>();
+    expect(config2.logging).toBe(false);
+    expect(config2.process).toBe(true);
   });
 
-  it('should throw a error when value is not number type', function () {
+  it('should throw a error when value is not number type', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -122,27 +122,12 @@ describe('@FromEnv', function () {
 
     process.env.SERVER_PORT = 'localhost';
 
-    expect(() => DatabaseConfig.init<DatabaseConfig>()).throws(
+    expect(DatabaseConfig.init<DatabaseConfig>()).rejects.toThrow(
       `Can't convert type of '${process.env.SERVER_PORT}' to number!`,
     );
   });
 
-  it('should throw a error when value is not number type', function () {
-    @Config()
-    class DatabaseConfig extends BaseConfig {
-      @ConfigField()
-      @FromEnv('SERVER_PORT')
-      public prot!: number;
-    }
-
-    process.env.SERVER_PORT = 'localhost';
-
-    expect(() => DatabaseConfig.init<DatabaseConfig>()).throws(
-      `Can't convert type of '${process.env.SERVER_PORT}' to number!`,
-    );
-  });
-
-  it('should throw a error when value is not boolean type', function () {
+  it('should throw a error when value is not boolean type', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -160,15 +145,15 @@ describe('@FromEnv', function () {
     process.env.LOGGING = 'yes';
     process.env.PROCESS = 'no';
 
-    expect(() => DatabaseConfig.init<DatabaseConfig>()).throws(
+    expect(DatabaseConfig.init<DatabaseConfig>()).rejects.toThrow(
       `Can't convert type of '${process.env.LOGGING}' to boolean!`,
     );
-    expect(() => ProcessConfig.init<ProcessConfig>()).throws(
+    expect(ProcessConfig.init<ProcessConfig>()).rejects.toThrow(
       `Can't convert type of '${process.env.PROCESS}' to boolean!`,
     );
   });
 
-  it('should get config field by default field name', function () {
+  it('should get config field by default field name', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -193,10 +178,10 @@ describe('@FromEnv', function () {
     process.env.PORT = '8080';
     process.env.LOGGING = 'true';
 
-    const config = DatabaseConfig.init<DatabaseConfig>();
-    expect(config.serverName).equal('test');
-    expect(config.host).equal('localhost');
-    expect(config.port).equal(8080);
-    expect(config.logging).equal(true);
+    const config = await DatabaseConfig.init<DatabaseConfig>();
+    expect(config.serverName).toBe('test');
+    expect(config.host).toBe('localhost');
+    expect(config.port).toBe(8080);
+    expect(config.logging).toBe(true);
   });
 });

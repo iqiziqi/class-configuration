@@ -1,8 +1,8 @@
-import { expect } from 'chai';
+import { expect } from 'expect';
 import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src/main';
 
 describe('@DefaultValue', function () {
-  it('should get default field', function () {
+  it('should get default field', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -20,13 +20,13 @@ describe('@DefaultValue', function () {
 
     process.env.SERVER_PORT = '8080';
 
-    const config = DatabaseConfig.init<DatabaseConfig>();
-    expect(config.host).equal('localhost');
-    expect(config.port).equal(8080);
-    expect(config.logging).equal(true);
+    const config = await DatabaseConfig.init<DatabaseConfig>();
+    expect(config.host).toBe('localhost');
+    expect(config.port).toBe(8080);
+    expect(config.logging).toBe(true);
   });
 
-  it('should throw a error when value is not number type', function () {
+  it('should throw a error when value is not number type', async function () {
     @Config()
     class ErrorNumberConfig extends BaseConfig {
       @ConfigField()
@@ -34,10 +34,10 @@ describe('@DefaultValue', function () {
       public notNumberType!: number;
     }
 
-    expect(() => ErrorNumberConfig.init<ErrorNumberConfig>()).throws(`Can't convert type of '12.a' to number!`);
+    expect(ErrorNumberConfig.init<ErrorNumberConfig>()).rejects.toThrow(`Can't convert type of '12.a' to number!`);
   });
 
-  it('should throw a error when value is not boolean type', function () {
+  it('should throw a error when value is not boolean type', async function () {
     @Config()
     class ErrorBoolConfig extends BaseConfig {
       @ConfigField()
@@ -45,10 +45,10 @@ describe('@DefaultValue', function () {
       public notBoolValue!: boolean;
     }
 
-    expect(() => ErrorBoolConfig.init<ErrorBoolConfig>()).throws(`Can't convert type of 'yes' to boolean!`);
+    expect(ErrorBoolConfig.init<ErrorBoolConfig>()).rejects.toThrow(`Can't convert type of 'yes' to boolean!`);
   });
 
-  it('should be override by environment', function () {
+  it('should be override by environment', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -71,9 +71,9 @@ describe('@DefaultValue', function () {
     process.env.PORT = '7890';
     process.env.LOGGING = 'false';
 
-    const databaseConfig = DatabaseConfig.init<DatabaseConfig>();
-    expect(databaseConfig.host).equal('0.0.0.0');
-    expect(databaseConfig.port).equal(7890);
-    expect(databaseConfig.logging).equal(false);
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    expect(databaseConfig.host).toBe('0.0.0.0');
+    expect(databaseConfig.port).toBe(7890);
+    expect(databaseConfig.logging).toBe(false);
   });
 });

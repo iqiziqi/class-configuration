@@ -1,8 +1,8 @@
-import { expect } from 'chai';
+import { expect } from 'expect';
 import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src/main';
 
 describe('@Config', function () {
-  it('should get config class field by default values', function () {
+  it('should get config class field by default values', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -31,14 +31,14 @@ describe('@Config', function () {
       public redis!: RedisConfig;
     }
 
-    const config = ConfigClassFieldConfig.init<ConfigClassFieldConfig>();
-    expect(config.database.host).equal('localhost');
-    expect(config.database.port).equal(8080);
-    expect(config.redis.host).equal('127.0.0.1');
-    expect(config.redis.port).equal(1188);
+    const config = await ConfigClassFieldConfig.init<ConfigClassFieldConfig>();
+    expect(config.database.host).toBe('localhost');
+    expect(config.database.port).toBe(8080);
+    expect(config.redis.host).toBe('127.0.0.1');
+    expect(config.redis.port).toBe(1188);
   });
 
-  it('should get config class field by environment', function () {
+  it('should get config class field by environment', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
@@ -72,22 +72,22 @@ describe('@Config', function () {
     process.env.REDIS_HOST = '127.0.0.1';
     process.env.REDIS_PORT = '1188';
 
-    const config = ClassConfig.init<ClassConfig>();
-    expect(config.database.host).equal('localhost');
-    expect(config.database.port).equal(8080);
-    expect(config.redis.host).equal('127.0.0.1');
-    expect(config.redis.port).equal(1188);
+    const config = await ClassConfig.init<ClassConfig>();
+    expect(config.database.host).toBe('localhost');
+    expect(config.database.port).toBe(8080);
+    expect(config.redis.host).toBe('127.0.0.1');
+    expect(config.redis.port).toBe(1188);
   });
 
-  it('should throw an error when class is not a config class', function () {
+  it('should throw an error when class is not a config class', async function () {
     class ErrorConfig extends BaseConfig {
       @ConfigField()
       public name!: string;
     }
-    expect(() => ErrorConfig.init<ErrorConfig>()).throw(`The class 'ErrorConfig' is not a config class.`);
+    expect(ErrorConfig.init<ErrorConfig>()).rejects.toThrow(`The class 'ErrorConfig' is not a config class.`);
   });
 
-  it('should throw an error when field is not a config class', function () {
+  it('should throw an error when field is not a config class', async function () {
     class DatabaseConfig {
       @ConfigField()
       public host!: string;
@@ -100,7 +100,7 @@ describe('@Config', function () {
       @ConfigField()
       public database!: DatabaseConfig;
     }
-    expect(() => ErrorConfig.init<ErrorConfig>()).throw(
+    expect(ErrorConfig.init<ErrorConfig>()).rejects.toThrow(
       `From instance 'database' get an unsupported type: 'DatabaseConfig'.`,
     );
   });
