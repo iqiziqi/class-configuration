@@ -9,7 +9,7 @@
     "lint": "eslint --fix --config .eslintrc src/*.ts spec/*.ts",
     "cover": "nyc mocha",
     "report": "nyc report --reporter=lcovonly",
-    "build": "rimraf dist && tsc -p ./tsconfig.build.json"
+    "build": "trash dist && tsc -p ./tsconfig.build.json"
   },
   "keywords": [
     "class",
@@ -35,7 +35,7 @@
     "nyc": "^15.1.0",
     "prettier": "^2.6.2",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2",
+    "trash-cli": "^5.0.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
   },
