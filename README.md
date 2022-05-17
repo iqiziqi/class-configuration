@@ -80,7 +80,7 @@ class Configuration extends BaseConfig {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = Configuration.init<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 If have no params set, Will use field name.
@@ -110,7 +110,7 @@ class Configuration {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = Configuration.init<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 ### Load config with default value
@@ -141,7 +141,7 @@ class Configuration extends BaseConfig {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = Configuration.init<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 ### Basic
@@ -170,7 +170,7 @@ class Configuration extends BaseConfig {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = Configuration.init<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 ### Class config
@@ -208,7 +208,7 @@ class Configuration {
 }
 
 // configuration = { "database: { "host": "localhost", "port": 8080 } }
-const configuration = Configuration.init<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 ### Customize parser
@@ -229,7 +229,7 @@ class DatabaseConfig extends BaseConfig {
 }
 
 // configuration = { "hosts": ["127.0.0.1", "127.0.0.2"] }
-const configuration = DatabaseConfig.init<DatabaseConfig>();
+const configuration = await DatabaseConfig.init<DatabaseConfig>();
 ```
 
 > Notice: This package does not check the type of the return value of the custom parser.
