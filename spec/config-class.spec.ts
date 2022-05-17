@@ -1,3 +1,4 @@
+import { IsPositive, IsString } from 'class-validator';
 import { expect } from 'expect';
 import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src/main';
 
@@ -103,5 +104,49 @@ describe('@Config', function () {
     expect(ErrorConfig.init<ErrorConfig>()).rejects.toThrow(
       `From instance 'database' get an unsupported type: 'DatabaseConfig'.`,
     );
+  });
+
+  it('should validate the config file', async function () {
+    @Config()
+    class DatabaseConfig extends BaseConfig {
+      @ConfigField({
+        parser: () => 'localhost',
+      })
+      @IsString()
+      public host!: string;
+      @ConfigField({
+        parser: () => 8080,
+      })
+      @IsPositive()
+      public port!: number;
+    }
+
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>({
+      validate: true,
+    });
+    expect(databaseConfig.host).toBe('localhost');
+    expect(databaseConfig.port).toBe(8080);
+  });
+
+  it('should throw an error validate failed', async function () {
+    @Config()
+    class DatabaseConfig extends BaseConfig {
+      @ConfigField({
+        parser: () => 'localhost',
+      })
+      @IsString()
+      public host!: string;
+      @ConfigField({
+        parser: () => '8080',
+      })
+      @IsPositive()
+      public port!: number;
+    }
+
+    expect(
+      DatabaseConfig.init<DatabaseConfig>({
+        validate: true,
+      }),
+    ).rejects.toThrow();
   });
 });

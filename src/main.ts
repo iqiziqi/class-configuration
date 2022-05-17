@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { validate } from 'class-validator';
+import { validateOrReject } from 'class-validator';
 import {
   CONFIG_CLASS,
   CONFIG_DEFAULT_VALUE,
@@ -101,7 +101,11 @@ export class BaseConfig {
           : parse<T>(nativeValue, { fieldType, fieldName });
       }
     }
-    if (options?.validate) await validate(instance, options.validateOptions);
+    const { validate, validateOptions } = options || {};
+    if (validate) {
+      const options = validateOptions ?? { stopAtFirstError: true };
+      await validateOrReject(instance, options);
+    }
     return instance;
   }
 }
