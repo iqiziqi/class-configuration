@@ -1,3 +1,4 @@
+import { ValidatorOptions } from 'class-validator';
 import { BaseConfig } from './main';
 
 export type UnknownConstructor = new (...args: []) => unknown;
@@ -15,4 +16,15 @@ export interface IParserExt<T extends BaseConfig> {
 
 export interface IConfigFieldOptions {
   parser: (value?: string) => unknown;
+}
+
+export interface IConfigInitOptions {
+  /**
+   * Whether to verify the data
+   */
+  validate?: boolean;
+  /**
+   * Options passed to validator during validation.
+   */
+  validateOptions?: ValidatorOptions;
 }

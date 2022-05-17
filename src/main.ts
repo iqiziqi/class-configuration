@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { validate } from 'class-validator';
 import {
   CONFIG_CLASS,
   CONFIG_DEFAULT_VALUE,
@@ -6,6 +7,7 @@ import {
   CONFIG_FIELD_PARSER,
   Constructor,
   IConfigFieldOptions,
+  IConfigInitOptions,
 } from './defines';
 import { changeToConstanceCase, parse } from './utils';
 
@@ -61,8 +63,46 @@ export class BaseConfig {
    *
    * @returns        The instance of config after init
    */
-  static init<T extends BaseConfig>(constructor?: Constructor<T>): T {
-    return init<T>(constructor ?? (this as unknown as Constructor<T>));
+  public static async init<T extends BaseConfig>(options?: IConfigInitOptions): Promise<T> {
+    return await this.from<T>(this as unknown as Constructor<T>, options);
+  }
+
+  /**
+   * Create the config class instance from a constructor.
+   *
+   * @returns        The instance of config after init
+   */
+  public static async from<T extends BaseConfig>(
+    constructor: Constructor<T>,
+    options?: IConfigInitOptions,
+  ): Promise<T> {
+    if (!Reflect.hasMetadata(CONFIG_CLASS, constructor)) {
+      throw new Error(`The class '${constructor.name}' is not a config class.`);
+    }
+    const instance = new constructor();
+    const fieldNames = Reflect.getMetadataKeys(instance) as Array<keyof T>;
+    for (const fieldName of fieldNames) {
+      const fieldKey = fieldName as string;
+      const fieldType = Reflect.getMetadata('design:type', instance, fieldKey);
+      const valueEnvName = Reflect.getMetadata(CONFIG_ENV_NAME, instance, fieldKey);
+      const valueFromEnv = process.env[valueEnvName];
+      const nativeValue = valueFromEnv ?? Reflect.getMetadata(CONFIG_DEFAULT_VALUE, instance, fieldKey);
+
+      if (typeof fieldType === 'function' && Reflect.hasMetadata(CONFIG_CLASS, fieldType)) {
+        if (Reflect.hasMetadata(CONFIG_DEFAULT_VALUE, instance, fieldKey))
+          throw new Error(`Config class field '${fieldKey}' can't set default value`);
+        if (Reflect.hasMetadata(CONFIG_ENV_NAME, instance, fieldKey))
+          throw new Error(`Config class field '${fieldKey}' can't set environment value`);
+        instance[fieldName] = await BaseConfig.from(fieldType);
+      } else {
+        const customizeParser = Reflect.getMetadata(CONFIG_FIELD_PARSER, instance, fieldKey);
+        instance[fieldName] = customizeParser
+          ? customizeParser(nativeValue)
+          : parse<T>(nativeValue, { fieldType, fieldName });
+      }
+    }
+    if (options?.validate) await validate(instance, options.validateOptions);
+    return instance;
   }
 }
 
@@ -74,7 +114,7 @@ export class BaseConfig {
  *
  * @returns        The instance of config after init
  */
-export function init<T extends object>(constructor: Constructor<T>) {
+export function init<T extends object>(constructor: Constructor<T>): T {
   if (!Reflect.hasMetadata(CONFIG_CLASS, constructor)) {
     throw new Error(`The class '${constructor.name}' is not a config class.`);
   }
@@ -92,7 +132,7 @@ export function init<T extends object>(constructor: Constructor<T>) {
         throw new Error(`Config class field '${fieldKey}' can't set default value`);
       if (Reflect.hasMetadata(CONFIG_ENV_NAME, instance, fieldKey))
         throw new Error(`Config class field '${fieldKey}' can't set environment value`);
-      instance[fieldName] = BaseConfig.init(fieldType);
+      instance[fieldName] = init(fieldType) as unknown as T[keyof T];
     } else {
       const customizeParser = Reflect.getMetadata(CONFIG_FIELD_PARSER, instance, fieldKey);
       instance[fieldName] = customizeParser
