@@ -26,6 +26,10 @@ describe('Utils', function () {
       expect(parseNumber('100')).equal(100);
       expect(parseNumber('-1')).equal(-1);
     });
+
+    it('should parse undefined value', function () {
+      expect(parseNumber(undefined)).equal(undefined);
+    });
   });
 
   describe('Utils.parseBool', function () {
@@ -54,6 +58,10 @@ describe('Utils', function () {
       expect(() => parseBool('1')).throws(`Can't convert type of '1' to boolean`);
       expect(() => parseBool('100')).throws(`Can't convert type of '100' to boolean`);
       expect(() => parseBool('-1')).throws(`Can't convert type of '-1' to boolean`);
+    });
+
+    it('should parse undefined value', function () {
+      expect(parseBool(undefined)).equal(undefined);
     });
   });
 

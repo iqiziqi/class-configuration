@@ -73,6 +73,34 @@ describe('@ConfigField', function () {
     );
   });
 
+  it('should get undefined value', function () {
+    @Config()
+    class DatabaseConfig extends BaseConfig {
+      @ConfigField()
+      @FromEnv()
+      public host?: string;
+      @ConfigField()
+      @FromEnv()
+      public port?: number;
+    }
+    const databaseConfig = DatabaseConfig.init<DatabaseConfig>();
+    expect(databaseConfig.host).equal(undefined);
+    expect(databaseConfig.port).equal(undefined);
+
+    @Config()
+    class RedisConfig extends BaseConfig {
+      @ConfigField()
+      @FromEnv()
+      public host!: string;
+      @ConfigField()
+      @FromEnv()
+      public port!: number;
+    }
+    const redisConfig = RedisConfig.init<RedisConfig>();
+    expect(redisConfig.host).equal(undefined);
+    expect(redisConfig.port).equal(undefined);
+  });
+
   it('should get config field by customized parser', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
