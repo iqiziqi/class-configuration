@@ -8,7 +8,7 @@ describe('@ConfigField', function () {
       @ConfigField()
       public error!: Array<string>;
     }
-    expect(ArrayConfigClass.init<ArrayConfigClass>()).rejects.toThrow(
+    expect(ArrayConfigClass.initAsync<ArrayConfigClass>()).rejects.toThrow(
       `From instance 'error' get an unsupported type: 'Array'.`,
     );
 
@@ -26,7 +26,7 @@ describe('@ConfigField', function () {
       @ConfigField()
       public error!: Partial<DatabaseConfig>;
     }
-    expect(ObjectConfigClass.init<ObjectConfigClass>()).rejects.toThrow(
+    expect(ObjectConfigClass.initAsync<ObjectConfigClass>()).rejects.toThrow(
       `From instance 'error' get an unsupported type: 'Object'.`,
     );
   });
@@ -47,7 +47,7 @@ describe('@ConfigField', function () {
       @DefaultValue(`{ host: '127.0.0.1', port: 9090 }`)
       public database!: DatabaseConfig;
     }
-    expect(ErrorConfigClass.init<ErrorConfigClass>()).rejects.toThrow(
+    expect(ErrorConfigClass.initAsync<ErrorConfigClass>()).rejects.toThrow(
       `Config class field 'database' can't set default value`,
     );
   });
@@ -68,7 +68,7 @@ describe('@ConfigField', function () {
       @FromEnv('TEST')
       public database!: DatabaseConfig;
     }
-    expect(ErrorConfigClass.init<ErrorConfigClass>()).rejects.toThrow(
+    expect(ErrorConfigClass.initAsync<ErrorConfigClass>()).rejects.toThrow(
       `Config class field 'database' can't set environment value`,
     );
   });
@@ -83,7 +83,7 @@ describe('@ConfigField', function () {
       @FromEnv()
       public port?: number;
     }
-    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(databaseConfig.host).toBe(undefined);
     expect(databaseConfig.port).toBe(undefined);
 
@@ -96,7 +96,7 @@ describe('@ConfigField', function () {
       @FromEnv()
       public port!: number;
     }
-    const redisConfig = await RedisConfig.init<RedisConfig>();
+    const redisConfig = await RedisConfig.initAsync<RedisConfig>();
     expect(redisConfig.host).toBe(undefined);
     expect(redisConfig.port).toBe(undefined);
   });
@@ -133,11 +133,11 @@ describe('@ConfigField', function () {
     process.env.SERVER = '{"host":"localhost","port":8080}';
     process.env.SERVERS = '[{"host":"localhost"},{"host":"127.0.0.1"}]';
 
-    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(databaseConfig.hosts).toStrictEqual(['192.168.0.2', '192.168.0.3', '192.168.0.4']);
-    const redisConfig = await RedisConfig.init<RedisConfig>();
+    const redisConfig = await RedisConfig.initAsync<RedisConfig>();
     expect(redisConfig.server).toStrictEqual({ host: 'localhost', port: 8080 });
-    const serverConfig = await ServerConfig.init<ServerConfig>();
+    const serverConfig = await ServerConfig.initAsync<ServerConfig>();
     expect(serverConfig.servers).toStrictEqual([{ host: 'localhost' }, { host: '127.0.0.1' }]);
   });
 
@@ -150,7 +150,7 @@ describe('@ConfigField', function () {
       public hosts?: string[];
     }
 
-    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(databaseConfig.hosts).toBeUndefined();
   });
 
@@ -171,7 +171,7 @@ describe('@ConfigField', function () {
     process.env.HOSTS = '192.168.0.2,192.168.0.3,192.168.0.4';
     process.env.PORT = '8090';
 
-    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(databaseConfig.hosts).toStrictEqual(['192.168.0.2', '192.168.0.3', '192.168.0.4']);
     expect(databaseConfig.port).toBe(8090);
   });
@@ -188,7 +188,7 @@ describe('@ConfigField', function () {
 
     process.env.HOSTS = '192.168.0.2,192.168.0.3,192.168.0.4';
 
-    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(databaseConfig.hosts).toStrictEqual(['192.168.0.2', '192.168.0.3', '192.168.0.4']);
   });
 });

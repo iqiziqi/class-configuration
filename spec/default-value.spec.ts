@@ -20,7 +20,7 @@ describe('@DefaultValue', function () {
 
     process.env.SERVER_PORT = '8080';
 
-    const config = await DatabaseConfig.init<DatabaseConfig>();
+    const config = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(config.host).toBe('localhost');
     expect(config.port).toBe(8080);
     expect(config.logging).toBe(true);
@@ -34,7 +34,7 @@ describe('@DefaultValue', function () {
       public notNumberType!: number;
     }
 
-    expect(ErrorNumberConfig.init<ErrorNumberConfig>()).rejects.toThrow(`Can't convert type of '12.a' to number!`);
+    expect(ErrorNumberConfig.initAsync<ErrorNumberConfig>()).rejects.toThrow(`Can't convert type of '12.a' to number!`);
   });
 
   it('should throw a error when value is not boolean type', async function () {
@@ -45,7 +45,7 @@ describe('@DefaultValue', function () {
       public notBoolValue!: boolean;
     }
 
-    expect(ErrorBoolConfig.init<ErrorBoolConfig>()).rejects.toThrow(`Can't convert type of 'yes' to boolean!`);
+    expect(ErrorBoolConfig.initAsync<ErrorBoolConfig>()).rejects.toThrow(`Can't convert type of 'yes' to boolean!`);
   });
 
   it('should be override by environment', async function () {
@@ -71,7 +71,7 @@ describe('@DefaultValue', function () {
     process.env.PORT = '7890';
     process.env.LOGGING = 'false';
 
-    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(databaseConfig.host).toBe('0.0.0.0');
     expect(databaseConfig.port).toBe(7890);
     expect(databaseConfig.logging).toBe(false);

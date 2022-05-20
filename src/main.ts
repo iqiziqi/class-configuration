@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { validateOrReject } from 'class-validator';
+import { validate, validateSync } from 'class-validator';
 import {
   CONFIG_CLASS,
   CONFIG_DEFAULT_VALUE,
@@ -59,23 +59,9 @@ export function DefaultValue(value: string): PropertyDecorator {
 
 export class BaseConfig {
   /**
-   * Init the config class instance.
-   *
-   * @returns        The instance of config after init
+   * Create instance by constructor.
    */
-  public static async init<T extends BaseConfig>(options?: IConfigInitOptions): Promise<T> {
-    return await this.from<T>(this as unknown as Constructor<T>, options);
-  }
-
-  /**
-   * Create the config class instance from a constructor.
-   *
-   * @returns        The instance of config after init
-   */
-  public static async from<T extends BaseConfig>(
-    constructor: Constructor<T>,
-    options?: IConfigInitOptions,
-  ): Promise<T> {
+  private static instantiate<T extends BaseConfig>(constructor: Constructor<T>): T {
     if (!Reflect.hasMetadata(CONFIG_CLASS, constructor)) {
       throw new Error(`The class '${constructor.name}' is not a config class.`);
     }
@@ -93,7 +79,7 @@ export class BaseConfig {
           throw new Error(`Config class field '${fieldKey}' can't set default value`);
         if (Reflect.hasMetadata(CONFIG_ENV_NAME, instance, fieldKey))
           throw new Error(`Config class field '${fieldKey}' can't set environment value`);
-        instance[fieldName] = await BaseConfig.from(fieldType);
+        instance[fieldName] = this.instantiate(fieldType);
       } else {
         const customizeParser = Reflect.getMetadata(CONFIG_FIELD_PARSER, instance, fieldKey);
         instance[fieldName] = customizeParser
@@ -101,10 +87,47 @@ export class BaseConfig {
           : parse<T>(nativeValue, { fieldType, fieldName });
       }
     }
+    return instance;
+  }
+
+  /**
+   * Init the config class instance.
+   *
+   * @returns        The instance of config after init
+   */
+  public static init<T extends BaseConfig>(options?: IConfigInitOptions): T {
+    return this.from<T>(this as unknown as Constructor<T>, options);
+  }
+
+  /**
+   * Create the config class instance from a constructor.
+   *
+   * @returns        The instance of config after init
+   */
+  public static from<T extends BaseConfig>(constructor: Constructor<T>, options?: IConfigInitOptions): T {
+    const instance = this.instantiate(constructor);
     const { validate, validateOptions } = options || {};
     if (validate) {
       const options = validateOptions ?? { stopAtFirstError: true };
-      await validateOrReject(instance, options);
+      const errors = validateSync(instance, options);
+      if (errors.length) throw errors;
+    }
+    return instance;
+  }
+
+  public static async initAsync<T extends BaseConfig>(options?: IConfigInitOptions): Promise<T> {
+    return this.fromAsync<T>(this as unknown as Constructor<T>, options);
+  }
+
+  public static async fromAsync<T extends BaseConfig>(
+    constructor: Constructor<T>,
+    options?: IConfigInitOptions,
+  ): Promise<T> {
+    const instance = this.instantiate(constructor);
+    if (options?.validate) {
+      const validateOptions = options?.validateOptions ?? { stopAtFirstError: true };
+      const errors = await validate(instance, validateOptions);
+      if (errors.length) throw errors;
     }
     return instance;
   }

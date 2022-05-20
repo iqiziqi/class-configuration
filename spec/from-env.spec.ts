@@ -20,9 +20,9 @@ describe('@FromEnv', function () {
     process.env.SERVER_PORT = '8080';
     process.env.PRICE = '12.8';
 
-    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(databaseConfig.port).toBe(8080);
-    const priceConfig = await PriceConfig.init<PriceConfig>();
+    const priceConfig = await PriceConfig.initAsync<PriceConfig>();
     expect(priceConfig.price).toBe(12.8);
   });
 
@@ -36,7 +36,7 @@ describe('@FromEnv', function () {
 
     process.env.SERVER_HOST = 'localhost';
 
-    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(databaseConfig.host).toBe('localhost');
   });
 
@@ -68,10 +68,10 @@ describe('@FromEnv', function () {
     process.env.SERVER_2_LOGGING = 'FALSE';
     process.env.SERVER_2_PROCESS = 'TRUE';
 
-    const config1 = await DatabaseConfigOne.init<DatabaseConfigOne>();
+    const config1 = await DatabaseConfigOne.initAsync<DatabaseConfigOne>();
     expect(config1.logging).toBe(false);
     expect(config1.process).toBe(true);
-    const config2 = await DatabaseConfigTwo.init<DatabaseConfigTwo>();
+    const config2 = await DatabaseConfigTwo.initAsync<DatabaseConfigTwo>();
     expect(config2.logging).toBe(false);
     expect(config2.process).toBe(true);
   });
@@ -104,10 +104,10 @@ describe('@FromEnv', function () {
     process.env.SERVER_2_LOGGING = 'F';
     process.env.SERVER_2_PROCESS = 'T';
 
-    const config1 = await DatabaseConfigOne.init<DatabaseConfigOne>();
+    const config1 = await DatabaseConfigOne.initAsync<DatabaseConfigOne>();
     expect(config1.logging).toBe(false);
     expect(config1.process).toBe(true);
-    const config2 = await DatabaseConfigTwo.init<DatabaseConfigTwo>();
+    const config2 = await DatabaseConfigTwo.initAsync<DatabaseConfigTwo>();
     expect(config2.logging).toBe(false);
     expect(config2.process).toBe(true);
   });
@@ -122,7 +122,7 @@ describe('@FromEnv', function () {
 
     process.env.SERVER_PORT = 'localhost';
 
-    expect(DatabaseConfig.init<DatabaseConfig>()).rejects.toThrow(
+    expect(DatabaseConfig.initAsync<DatabaseConfig>()).rejects.toThrow(
       `Can't convert type of '${process.env.SERVER_PORT}' to number!`,
     );
   });
@@ -145,10 +145,10 @@ describe('@FromEnv', function () {
     process.env.LOGGING = 'yes';
     process.env.PROCESS = 'no';
 
-    expect(DatabaseConfig.init<DatabaseConfig>()).rejects.toThrow(
+    expect(DatabaseConfig.initAsync<DatabaseConfig>()).rejects.toThrow(
       `Can't convert type of '${process.env.LOGGING}' to boolean!`,
     );
-    expect(ProcessConfig.init<ProcessConfig>()).rejects.toThrow(
+    expect(ProcessConfig.initAsync<ProcessConfig>()).rejects.toThrow(
       `Can't convert type of '${process.env.PROCESS}' to boolean!`,
     );
   });
@@ -178,7 +178,7 @@ describe('@FromEnv', function () {
     process.env.PORT = '8080';
     process.env.LOGGING = 'true';
 
-    const config = await DatabaseConfig.init<DatabaseConfig>();
+    const config = await DatabaseConfig.initAsync<DatabaseConfig>();
     expect(config.serverName).toBe('test');
     expect(config.host).toBe('localhost');
     expect(config.port).toBe(8080);
