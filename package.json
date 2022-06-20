@@ -1,6 +1,6 @@
 {
   "name": "class-configuration",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "The config package to define and read the configuration",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
