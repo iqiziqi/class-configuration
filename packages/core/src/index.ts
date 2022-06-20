@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { validate, validateSync } from 'class-validator';
 import {
   CONFIG_CLASS,
@@ -9,7 +10,7 @@ import {
   IConfigFieldOptions,
   IConfigInitOptions,
 } from './defines';
-import { changeToConstanceCase, parse } from './utils';
+import { parse } from './utils';
 
 /**
  * Set a class to config class.
@@ -27,21 +28,6 @@ export function ConfigField(options?: IConfigFieldOptions): PropertyDecorator {
   return function (target: object, propertyKey: string | symbol) {
     Reflect.defineMetadata(propertyKey, undefined, target);
     Reflect.defineMetadata(CONFIG_FIELD_PARSER, options?.parser, target, propertyKey);
-  };
-}
-
-/**
- * Set environment value for a class field.
- * If the field type is not string,
- * it will try convert to target type
- * It will override the default value.
- *
- * @param name The environment name.
- */
-export function FromEnv(name?: string): PropertyDecorator {
-  return function (target: object, propertyKey: string | symbol) {
-    const environment = name ?? changeToConstanceCase(propertyKey as string);
-    Reflect.defineMetadata(CONFIG_ENV_NAME, environment, target, propertyKey);
   };
 }
 

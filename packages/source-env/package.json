@@ -1,0 +1,29 @@
+{
+  "name": "@class-config/source-env",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "lint": "eslint --fix --config .eslintrc src/*.ts spec/*.ts",
+    "cover": "nyc mocha",
+    "report": "nyc report --reporter=lcovonly",
+    "build": "pnpm run clean && tsc -p ./tsconfig.build.json",
+    "clean": "trash dist"
+  },
+  "keywords": [
+    "class",
+    "config",
+    "env",
+    "environment"
+  ],
+  "author": "iqiziqi",
+  "license": "MIT",
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts"
+  ],
+  "dependencies": {
+    "@class-config/core": "workspace:^0.1.0"
+  }
+}
