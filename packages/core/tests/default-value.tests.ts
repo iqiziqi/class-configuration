@@ -1,5 +1,5 @@
 import { expect } from 'expect';
-import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src/main';
+import { BaseConfig, Config, ConfigField, DefaultValue } from '../src';
 
 describe('@DefaultValue', function () {
   it('should get default field', async function () {
@@ -46,34 +46,5 @@ describe('@DefaultValue', function () {
     }
 
     expect(ErrorBoolConfig.initAsync<ErrorBoolConfig>()).rejects.toThrow(`Can't convert type of 'yes' to boolean!`);
-  });
-
-  it('should be override by environment', async function () {
-    @Config()
-    class DatabaseConfig extends BaseConfig {
-      @ConfigField()
-      @FromEnv('HOST')
-      @DefaultValue('localhost')
-      public host!: string;
-
-      @ConfigField()
-      @FromEnv('PORT')
-      @DefaultValue('8080')
-      public port!: number;
-
-      @ConfigField()
-      @FromEnv('LOGGING')
-      @DefaultValue('true')
-      public logging!: boolean;
-    }
-
-    process.env.HOST = '0.0.0.0';
-    process.env.PORT = '7890';
-    process.env.LOGGING = 'false';
-
-    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
-    expect(databaseConfig.host).toBe('0.0.0.0');
-    expect(databaseConfig.port).toBe(7890);
-    expect(databaseConfig.logging).toBe(false);
   });
 });

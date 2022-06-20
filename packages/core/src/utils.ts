@@ -21,16 +21,6 @@ export function parseNumber(value?: string) {
 }
 
 /**
- * Change words from camel to constance case.
- */
-export function changeToConstanceCase(source: string) {
-  return source
-    .replace(/_?([A-Z])/g, (_, str) => `_${str}`)
-    .replace(/^_*/, '')
-    .toUpperCase();
-}
-
-/**
  * The default value parser.
  */
 export function parse<T>(value: string | undefined, ext: IParserExt<T>) {
@@ -43,6 +33,6 @@ export function parse<T>(value: string | undefined, ext: IParserExt<T>) {
     case fieldType === (Boolean as Constructor<unknown>):
       return parseBool(value);
     default:
-      throw new TypeError(`From instance '${fieldName}' get an unsupported type: '${fieldType.name}'.`);
+      throw new TypeError(`From instance '${fieldName.toString()}' get an unsupported type: '${fieldType.name}'.`);
   }
 }

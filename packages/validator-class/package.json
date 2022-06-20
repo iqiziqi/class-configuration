@@ -1,0 +1,22 @@
+{
+  "name": "@class-config/class-validator",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {},
+  "keywords": [
+    "class",
+    "config",
+    "validator",
+    "validate"
+  ],
+  "author": "iqiziqi",
+  "license": "MIT",
+  "dependencies": {
+    "@class-config/core": "workspace:^0.1.0"
+  },
+  "optionalDependencies": {
+    "class-validator": "^0.13.2"
+  }
+}

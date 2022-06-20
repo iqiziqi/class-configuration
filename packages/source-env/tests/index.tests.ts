@@ -1,7 +1,90 @@
+import { BaseConfig, Config, ConfigField, DefaultValue } from '@class-config/core';
 import { expect } from 'expect';
-import { BaseConfig, Config, ConfigField, FromEnv } from '../src/main';
+import { FromEnv } from '../src';
 
-describe('@FromEnv', function () {
+describe('', function () {
+  it('should get config class field by environment asynchronously', async function () {
+    @Config()
+    class DatabaseConfig extends BaseConfig {
+      @ConfigField()
+      @FromEnv('SERVER_HOST')
+      host!: string;
+      @ConfigField()
+      @FromEnv('SERVER_PORT')
+      port!: number;
+    }
+
+    @Config()
+    class RedisConfig extends BaseConfig {
+      @ConfigField()
+      @FromEnv('REDIS_HOST')
+      host!: string;
+      @ConfigField()
+      @FromEnv('REDIS_PORT')
+      port!: number;
+    }
+
+    @Config()
+    class ClassConfig extends BaseConfig {
+      @ConfigField()
+      public database!: DatabaseConfig;
+      @ConfigField()
+      public redis!: RedisConfig;
+    }
+
+    process.env.SERVER_HOST = 'localhost';
+    process.env.SERVER_PORT = '8080';
+    process.env.REDIS_HOST = '127.0.0.1';
+    process.env.REDIS_PORT = '1188';
+
+    const config = await ClassConfig.initAsync<ClassConfig>();
+    expect(config.database.host).toBe('localhost');
+    expect(config.database.port).toBe(8080);
+    expect(config.redis.host).toBe('127.0.0.1');
+    expect(config.redis.port).toBe(1188);
+  });
+
+  it('should get config class field by environment synchronously', async function () {
+    @Config()
+    class DatabaseConfig extends BaseConfig {
+      @ConfigField()
+      @FromEnv('SERVER_HOST')
+      host!: string;
+      @ConfigField()
+      @FromEnv('SERVER_PORT')
+      port!: number;
+    }
+
+    @Config()
+    class RedisConfig extends BaseConfig {
+      @ConfigField()
+      @FromEnv('REDIS_HOST')
+      host!: string;
+      @ConfigField()
+      @FromEnv('REDIS_PORT')
+      port!: number;
+    }
+
+    @Config()
+    class ClassConfig extends BaseConfig {
+      @ConfigField()
+      public database!: DatabaseConfig;
+      @ConfigField()
+      public redis!: RedisConfig;
+    }
+
+    process.env.SERVER_HOST = 'localhost';
+    process.env.SERVER_PORT = '8080';
+    process.env.REDIS_HOST = '127.0.0.1';
+    process.env.REDIS_PORT = '1188';
+
+    const config = ClassConfig.init<ClassConfig>();
+    expect(config.database.host).toBe('localhost');
+    expect(config.database.port).toBe(8080);
+    expect(config.redis.host).toBe('127.0.0.1');
+    expect(config.redis.port).toBe(1188);
+  });
+
   it('should get number field from environment', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
@@ -183,5 +266,34 @@ describe('@FromEnv', function () {
     expect(config.host).toBe('localhost');
     expect(config.port).toBe(8080);
     expect(config.logging).toBe(true);
+  });
+
+  it('should be override default value', async function () {
+    @Config()
+    class DatabaseConfig extends BaseConfig {
+      @ConfigField()
+      @FromEnv('HOST')
+      @DefaultValue('localhost')
+      public host!: string;
+
+      @ConfigField()
+      @FromEnv('PORT')
+      @DefaultValue('8080')
+      public port!: number;
+
+      @ConfigField()
+      @FromEnv('LOGGING')
+      @DefaultValue('true')
+      public logging!: boolean;
+    }
+
+    process.env.HOST = '0.0.0.0';
+    process.env.PORT = '7890';
+    process.env.LOGGING = 'false';
+
+    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
+    expect(databaseConfig.host).toBe('0.0.0.0');
+    expect(databaseConfig.port).toBe(7890);
+    expect(databaseConfig.logging).toBe(false);
   });
 });

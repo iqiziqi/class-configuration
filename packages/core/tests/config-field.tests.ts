@@ -1,5 +1,5 @@
 import { expect } from 'expect';
-import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src/main';
+import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src';
 
 describe('@ConfigField', function () {
   it('should throw an error when field is an unsupported type by default parser', async function () {

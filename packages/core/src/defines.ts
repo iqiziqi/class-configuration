@@ -1,5 +1,4 @@
-import { ValidatorOptions } from 'class-validator';
-import { BaseConfig } from './main';
+import { BaseConfig } from '.';
 
 export type UnknownConstructor = new (...args: []) => unknown;
 export type Constructor<T> = new (...args: []) => T;
