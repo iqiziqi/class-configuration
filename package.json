@@ -20,6 +20,7 @@
   "author": "iqiziqi",
   "license": "MIT",
   "devDependencies": {
+    "@changesets/cli": "^2.23.0",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/mocha": "^8.2.3",
     "@types/node": "^15.14.9",
