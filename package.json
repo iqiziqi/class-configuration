@@ -3,6 +3,7 @@
   "description": "The config package to define and read the configuration",
   "scripts": {
     "prepare": "husky install",
+    "lint": "eslint --fix --config .eslintrc packages/**/src/*.ts packages/**/tests/*.ts",
     "cover": "nyc mocha",
     "report": "nyc report --reporter=lcovonly"
   },
