@@ -4,7 +4,11 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "scripts": {},
+  "scripts": {
+    "lint": "eslint --fix --config .eslintrc src/*.ts spec/*.ts",
+    "build": "pnpm run clean && tsc -p ./tsconfig.build.json",
+    "clean": "trash dist"
+  },
   "keywords": [
     "class",
     "config",

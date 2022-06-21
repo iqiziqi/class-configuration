@@ -6,8 +6,6 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint --fix --config .eslintrc src/*.ts spec/*.ts",
-    "cover": "nyc mocha",
-    "report": "nyc report --reporter=lcovonly",
     "build": "pnpm run clean && tsc -p ./tsconfig.build.json",
     "clean": "trash dist"
   },

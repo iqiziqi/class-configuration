@@ -1,29 +1,30 @@
-import { BaseConfig } from '.';
-
-export type UnknownConstructor = new (...args: []) => unknown;
-export type Constructor<T> = new (...args: []) => T;
+export type Constructor = new (...args: []) => unknown;
 
 export const CONFIG_CLASS = 'CONFIG_CLASS';
 export const CONFIG_DEFAULT_VALUE = 'CONFIG_DEFAULT_VALUE';
-export const CONFIG_ENV_NAME = 'CONFIG_ENV_VALUE';
 export const CONFIG_FIELD_PARSER = 'CONFIG_FIELD_PARSER';
+export const CONFIG_SOURCES = 'CONFIG_SOURCES';
 
-export interface IParserExt<T extends BaseConfig> {
-  fieldType: Constructor<T>;
-  fieldName: keyof T;
+export interface IFieldExt {
+  fieldType: Constructor;
+  fieldName: string | symbol;
 }
 
 export interface IConfigFieldOptions {
   parser: (value?: string) => unknown;
 }
 
-export interface IConfigInitOptions {
+export interface IConfigSource<T> {
+  getValue: (filedExt: IFieldExt) => T | undefined;
+}
+
+export interface IValidator {
+  validate: (config: object) => boolean | Promise<boolean>;
+}
+
+export interface IConfigOptions {
   /**
-   * Whether to verify the data
+   * The config validator
    */
-  validate?: boolean;
-  /**
-   * Options passed to validator during validation.
-   */
-  validateOptions?: ValidatorOptions;
+  validator?: IValidator;
 }

@@ -1,6 +1,5 @@
 import 'reflect-metadata';
-
-export const CONFIG_ENV_NAME = 'CONFIG_ENV_VALUE';
+import { IConfigSource, IFieldExt } from '@class-config/core';
 
 /**
  * Change words from camel to constance case.
@@ -13,16 +12,12 @@ export function changeToConstanceCase(source: string) {
 }
 
 /**
- * Set environment value for a class field.
- * If the field type is not string,
- * it will try convert to target type
- * It will override the default value.
- *
- * @param name The environment name.
+ * Get config value from system environment.
  */
-export function FromEnv(name?: string): PropertyDecorator {
-  return function (target: object, propertyKey: string | symbol) {
-    const environment = name ?? changeToConstanceCase(propertyKey as string);
-    Reflect.defineMetadata(CONFIG_ENV_NAME, environment, target, propertyKey);
-  };
+export class Env implements IConfigSource<string> {
+  public constructor(private readonly name?: string) {}
+  public getValue(ext: IFieldExt) {
+    const environmentName = this.name ?? changeToConstanceCase(ext.fieldName);
+    return process.env[environmentName];
+  }
 }

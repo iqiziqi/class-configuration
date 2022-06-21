@@ -1,7 +1,7 @@
 {
   "colors": true,
   "recursive": [
-    "tests/*.tests.ts"
+    "**/tests/*.tests.ts"
   ],
   "require": [
     "ts-node/register"
