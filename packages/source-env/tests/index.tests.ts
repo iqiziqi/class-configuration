@@ -1,4 +1,4 @@
-import { BaseConfig, Config, ConfigField, DefaultValue, FromSource } from '@class-config/core';
+import { BaseConfig, Config, ConfigField, DefaultValue, From } from '@class-config/core';
 import { expect } from 'expect';
 import { Env } from '../src';
 
@@ -7,20 +7,20 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('SERVER_HOST'))
+      @From(new Env('SERVER_HOST'))
       host!: string;
       @ConfigField()
-      @FromSource(new Env('SERVER_PORT'))
+      @From(new Env('SERVER_PORT'))
       port!: number;
     }
 
     @Config()
     class RedisConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('REDIS_HOST'))
+      @From(new Env('REDIS_HOST'))
       host!: string;
       @ConfigField()
-      @FromSource(new Env('REDIS_PORT'))
+      @From(new Env('REDIS_PORT'))
       port!: number;
     }
 
@@ -48,14 +48,14 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('SERVER_PORT'))
+      @From(new Env('SERVER_PORT'))
       public port!: number;
     }
 
     @Config()
     class PriceConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('PRICE'))
+      @From(new Env('PRICE'))
       public price!: number;
     }
 
@@ -72,7 +72,7 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('SERVER_HOST'))
+      @From(new Env('SERVER_HOST'))
       public host!: string;
     }
 
@@ -86,22 +86,22 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfigOne extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('SERVER_1_LOGGING'))
+      @From(new Env('SERVER_1_LOGGING'))
       public logging!: boolean;
 
       @ConfigField()
-      @FromSource(new Env('SERVER_1_PROCESS'))
+      @From(new Env('SERVER_1_PROCESS'))
       public process!: boolean;
     }
 
     @Config()
     class DatabaseConfigTwo extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('SERVER_2_LOGGING'))
+      @From(new Env('SERVER_2_LOGGING'))
       public logging!: boolean;
 
       @ConfigField()
-      @FromSource(new Env('SERVER_2_PROCESS'))
+      @From(new Env('SERVER_2_PROCESS'))
       public process!: boolean;
     }
 
@@ -122,22 +122,22 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfigOne extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('SERVER_1_LOGGING'))
+      @From(new Env('SERVER_1_LOGGING'))
       public logging!: boolean;
 
       @ConfigField()
-      @FromSource(new Env('SERVER_1_PROCESS'))
+      @From(new Env('SERVER_1_PROCESS'))
       public process!: boolean;
     }
 
     @Config()
     class DatabaseConfigTwo extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('SERVER_2_LOGGING'))
+      @From(new Env('SERVER_2_LOGGING'))
       public logging!: boolean;
 
       @ConfigField()
-      @FromSource(new Env('SERVER_2_PROCESS'))
+      @From(new Env('SERVER_2_PROCESS'))
       public process!: boolean;
     }
 
@@ -158,7 +158,7 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('SERVER_PORT'))
+      @From(new Env('SERVER_PORT'))
       public prot!: number;
     }
 
@@ -173,14 +173,14 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('LOGGING'))
+      @From(new Env('LOGGING'))
       public logging!: boolean;
     }
 
     @Config()
     class ProcessConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('PROCESS'))
+      @From(new Env('PROCESS'))
       public process!: boolean;
     }
 
@@ -199,19 +199,19 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env())
+      @From(new Env())
       public serverName!: string;
 
       @ConfigField()
-      @FromSource(new Env())
+      @From(new Env())
       public host!: string;
 
       @ConfigField()
-      @FromSource(new Env())
+      @From(new Env())
       public port!: number;
 
       @ConfigField()
-      @FromSource(new Env())
+      @From(new Env())
       public logging!: boolean;
     }
 
@@ -231,17 +231,17 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('HOST'))
+      @From(new Env('HOST'))
       @DefaultValue('localhost')
       public host!: string;
 
       @ConfigField()
-      @FromSource(new Env('PORT'))
+      @From(new Env('PORT'))
       @DefaultValue('8080')
       public port!: number;
 
       @ConfigField()
-      @FromSource(new Env('LOGGING'))
+      @From(new Env('LOGGING'))
       @DefaultValue('true')
       public logging!: boolean;
     }
@@ -260,7 +260,7 @@ describe('Test load config from environment source', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('HOST'), new Env('SERVER_HOST'))
+      @From(new Env('HOST'), new Env('SERVER_HOST'))
       @DefaultValue('localhost')
       public host!: string;
     }
@@ -268,7 +268,7 @@ describe('Test load config from environment source', function () {
     @Config()
     class RedisConfig extends BaseConfig {
       @ConfigField()
-      @FromSource(new Env('FIRST_REDIS_HOST_NAME'), new Env('NEXT_REDIS_HOST_NAME'))
+      @From(new Env('FIRST_REDIS_HOST_NAME'), new Env('NEXT_REDIS_HOST_NAME'))
       @DefaultValue('9999')
       public hostName!: string;
     }

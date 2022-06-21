@@ -5,7 +5,8 @@
     "prepare": "husky install",
     "lint": "eslint --fix --config .eslintrc packages/**/src/*.ts packages/**/tests/*.ts",
     "cover": "nyc mocha",
-    "report": "nyc report --reporter=lcovonly"
+    "report": "nyc report --reporter=lcovonly",
+    "build": "pnpm --filter=* run build"
   },
   "keywords": [
     "class",

@@ -4,8 +4,9 @@ import { IConfigSource, IFieldExt } from '@class-config/core';
 /**
  * Change words from camel to constance case.
  */
-export function changeToConstanceCase(source: string) {
+export function changeToConstanceCase(source: string | symbol) {
   return source
+    .toString()
     .replace(/_?([A-Z])/g, (_, str) => `_${str}`)
     .replace(/^_*/, '')
     .toUpperCase();
