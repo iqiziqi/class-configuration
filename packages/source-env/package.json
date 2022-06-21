@@ -21,6 +21,6 @@
     "dist/*.d.ts"
   ],
   "dependencies": {
-    "@class-config/core": "workspace:^0.1.0"
+    "@class-config/core": "workspace:^0.5.0"
   }
 }

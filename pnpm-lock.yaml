@@ -44,23 +44,23 @@ importers:
       ts-node: 10.7.0_ixcth6kbstn6no7hiktnzckliq
       typescript: 4.6.4
 
-  packages/class-validator:
-    specifiers:
-      '@class-config/core': workspace:^0.1.0
-      class-validator: ^0.13.2
-    dependencies:
-      '@class-config/core': link:../core
-    optionalDependencies:
-      class-validator: 0.13.2
-
   packages/core:
     specifiers: {}
 
   packages/source-env:
     specifiers:
-      '@class-config/core': workspace:^0.1.0
+      '@class-config/core': workspace:^0.5.0
     dependencies:
       '@class-config/core': link:../core
+
+  packages/validator-class:
+    specifiers:
+      '@class-config/core': workspace:^0.5.0
+      class-validator: ^0.13.2
+    dependencies:
+      '@class-config/core': link:../core
+    optionalDependencies:
+      class-validator: 0.13.2
 
 packages:
 

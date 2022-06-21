@@ -17,7 +17,7 @@
   "author": "iqiziqi",
   "license": "MIT",
   "dependencies": {
-    "@class-config/core": "workspace:^0.1.0"
+    "@class-config/core": "workspace:^0.5.0"
   },
   "optionalDependencies": {
     "class-validator": "^0.13.2"
