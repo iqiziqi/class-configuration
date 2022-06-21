@@ -1,8 +1,9 @@
 import { expect } from 'expect';
 import { Config, BaseConfig, ConfigField } from '@class-config/core';
 import { IsString, IsPositive } from 'class-validator';
+import { ClassValidator } from '../src';
 
-describe('', function () {
+describe('Test validate config class', function () {
   it('should validate the config file', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
@@ -18,8 +19,8 @@ describe('', function () {
       public port!: number;
     }
 
-    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>({
-      validate: true,
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>({
+      validator: new ClassValidator(),
     });
     expect(databaseConfig.host).toBe('localhost');
     expect(databaseConfig.port).toBe(8080);
@@ -40,11 +41,6 @@ describe('', function () {
       public port!: number;
     }
 
-    expect(
-      DatabaseConfig.initAsync<DatabaseConfig>({
-        validate: true,
-      }),
-    ).rejects.toThrow();
-    expect(() => DatabaseConfig.init<DatabaseConfig>({ validate: true })).toThrow();
+    expect(DatabaseConfig.init<DatabaseConfig>({ validator: new ClassValidator() })).rejects.toThrow();
   });
 });

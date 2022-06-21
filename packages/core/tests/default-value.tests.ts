@@ -1,7 +1,7 @@
 import { expect } from 'expect';
 import { BaseConfig, Config, ConfigField, DefaultValue } from '../src';
 
-describe('@DefaultValue', function () {
+describe('Test load config from default value', function () {
   it('should get default field', async function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
@@ -20,7 +20,7 @@ describe('@DefaultValue', function () {
 
     process.env.SERVER_PORT = '8080';
 
-    const config = await DatabaseConfig.initAsync<DatabaseConfig>();
+    const config = await DatabaseConfig.init<DatabaseConfig>();
     expect(config.host).toBe('localhost');
     expect(config.port).toBe(8080);
     expect(config.logging).toBe(true);
@@ -34,7 +34,7 @@ describe('@DefaultValue', function () {
       public notNumberType!: number;
     }
 
-    expect(ErrorNumberConfig.initAsync<ErrorNumberConfig>()).rejects.toThrow(`Can't convert type of '12.a' to number!`);
+    expect(ErrorNumberConfig.init<ErrorNumberConfig>()).rejects.toThrow(`Can't convert type of '12.a' to number!`);
   });
 
   it('should throw a error when value is not boolean type', async function () {
@@ -45,6 +45,6 @@ describe('@DefaultValue', function () {
       public notBoolValue!: boolean;
     }
 
-    expect(ErrorBoolConfig.initAsync<ErrorBoolConfig>()).rejects.toThrow(`Can't convert type of 'yes' to boolean!`);
+    expect(ErrorBoolConfig.init<ErrorBoolConfig>()).rejects.toThrow(`Can't convert type of 'yes' to boolean!`);
   });
 });

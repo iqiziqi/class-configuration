@@ -1,14 +1,15 @@
 import { expect } from 'expect';
-import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from '../src';
+import { BaseConfig, Config, ConfigField, DefaultValue, From } from '../src';
+import { ValueSource } from './utils';
 
-describe('@ConfigField', function () {
+describe('Test @ConfigField Decorator', function () {
   it('should throw an error when field is an unsupported type by default parser', async function () {
     @Config()
     class ArrayConfigClass extends BaseConfig {
       @ConfigField()
       public error!: Array<string>;
     }
-    expect(ArrayConfigClass.initAsync<ArrayConfigClass>()).rejects.toThrow(
+    expect(ArrayConfigClass.init<ArrayConfigClass>()).rejects.toThrow(
       `From instance 'error' get an unsupported type: 'Array'.`,
     );
 
@@ -26,7 +27,7 @@ describe('@ConfigField', function () {
       @ConfigField()
       public error!: Partial<DatabaseConfig>;
     }
-    expect(ObjectConfigClass.initAsync<ObjectConfigClass>()).rejects.toThrow(
+    expect(ObjectConfigClass.init<ObjectConfigClass>()).rejects.toThrow(
       `From instance 'error' get an unsupported type: 'Object'.`,
     );
   });
@@ -47,7 +48,7 @@ describe('@ConfigField', function () {
       @DefaultValue(`{ host: '127.0.0.1', port: 9090 }`)
       public database!: DatabaseConfig;
     }
-    expect(ErrorConfigClass.initAsync<ErrorConfigClass>()).rejects.toThrow(
+    expect(ErrorConfigClass.init<ErrorConfigClass>()).rejects.toThrow(
       `Config class field 'database' can't set default value`,
     );
   });
@@ -65,11 +66,11 @@ describe('@ConfigField', function () {
     @Config()
     class ErrorConfigClass extends BaseConfig {
       @ConfigField()
-      @FromEnv('TEST')
+      @From(new ValueSource('TEST'))
       public database!: DatabaseConfig;
     }
-    expect(ErrorConfigClass.initAsync<ErrorConfigClass>()).rejects.toThrow(
-      `Config class field 'database' can't set environment value`,
+    expect(ErrorConfigClass.init<ErrorConfigClass>()).rejects.toThrow(
+      `Config class field 'database' can't set config source`,
     );
   });
 
@@ -77,26 +78,26 @@ describe('@ConfigField', function () {
     @Config()
     class DatabaseConfig extends BaseConfig {
       @ConfigField()
-      @FromEnv()
+      @From()
       public host?: string;
       @ConfigField()
-      @FromEnv()
+      @From()
       public port?: number;
     }
-    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
     expect(databaseConfig.host).toBe(undefined);
     expect(databaseConfig.port).toBe(undefined);
 
     @Config()
     class RedisConfig extends BaseConfig {
       @ConfigField()
-      @FromEnv()
+      @From()
       public host!: string;
       @ConfigField()
-      @FromEnv()
+      @From()
       public port!: number;
     }
-    const redisConfig = await RedisConfig.initAsync<RedisConfig>();
+    const redisConfig = await RedisConfig.init<RedisConfig>();
     expect(redisConfig.host).toBe(undefined);
     expect(redisConfig.port).toBe(undefined);
   });
@@ -107,37 +108,33 @@ describe('@ConfigField', function () {
       @ConfigField({
         parser: (value) => value?.split(','),
       })
-      @FromEnv()
+      @From(new ValueSource('192.168.0.2,192.168.0.3,192.168.0.4'))
       public hosts!: string[];
     }
 
     @Config()
     class RedisConfig extends BaseConfig {
       @ConfigField({
-        parser: (value) => (value ? JSON.parse(value) : undefined),
+        parser: (value) => value && JSON.parse(value),
       })
-      @FromEnv()
+      @From(new ValueSource('{"host":"localhost","port":8080}'))
       public server!: { host: string; port: number };
     }
 
     @Config()
     class ServerConfig extends BaseConfig {
       @ConfigField({
-        parser: (value) => (value ? JSON.parse(value) : undefined),
+        parser: (value) => value && JSON.parse(value),
       })
-      @FromEnv()
+      @From(new ValueSource('[{"host":"localhost"},{"host":"127.0.0.1"}]'))
       public servers!: { host: string }[];
     }
 
-    process.env.HOSTS = '192.168.0.2,192.168.0.3,192.168.0.4';
-    process.env.SERVER = '{"host":"localhost","port":8080}';
-    process.env.SERVERS = '[{"host":"localhost"},{"host":"127.0.0.1"}]';
-
-    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
     expect(databaseConfig.hosts).toStrictEqual(['192.168.0.2', '192.168.0.3', '192.168.0.4']);
-    const redisConfig = await RedisConfig.initAsync<RedisConfig>();
+    const redisConfig = await RedisConfig.init<RedisConfig>();
     expect(redisConfig.server).toStrictEqual({ host: 'localhost', port: 8080 });
-    const serverConfig = await ServerConfig.initAsync<ServerConfig>();
+    const serverConfig = await ServerConfig.init<ServerConfig>();
     expect(serverConfig.servers).toStrictEqual([{ host: 'localhost' }, { host: '127.0.0.1' }]);
   });
 
@@ -150,7 +147,7 @@ describe('@ConfigField', function () {
       public hosts?: string[];
     }
 
-    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
     expect(databaseConfig.hosts).toBeUndefined();
   });
 
@@ -160,18 +157,15 @@ describe('@ConfigField', function () {
       @ConfigField({
         parser: (value) => value?.split(','),
       })
-      @FromEnv()
+      @From(new ValueSource('192.168.0.2,192.168.0.3,192.168.0.4'))
       public hosts!: string[];
 
       @ConfigField()
-      @FromEnv()
+      @From(new ValueSource('8090'))
       public port!: number;
     }
 
-    process.env.HOSTS = '192.168.0.2,192.168.0.3,192.168.0.4';
-    process.env.PORT = '8090';
-
-    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
     expect(databaseConfig.hosts).toStrictEqual(['192.168.0.2', '192.168.0.3', '192.168.0.4']);
     expect(databaseConfig.port).toBe(8090);
   });
@@ -182,13 +176,11 @@ describe('@ConfigField', function () {
       @ConfigField({
         parser: (value) => value?.split(','),
       })
-      @FromEnv()
+      @From(new ValueSource('192.168.0.2,192.168.0.3,192.168.0.4'))
       public hosts!: string;
     }
 
-    process.env.HOSTS = '192.168.0.2,192.168.0.3,192.168.0.4';
-
-    const databaseConfig = await DatabaseConfig.initAsync<DatabaseConfig>();
+    const databaseConfig = await DatabaseConfig.init<DatabaseConfig>();
     expect(databaseConfig.hosts).toStrictEqual(['192.168.0.2', '192.168.0.3', '192.168.0.4']);
   });
 });

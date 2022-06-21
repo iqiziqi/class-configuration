@@ -1,4 +1,4 @@
-import { Constructor, IParserExt } from './defines';
+import { Constructor, IFieldExt } from './defines';
 
 /**
  * Parse a value to boolean.
@@ -23,14 +23,14 @@ export function parseNumber(value?: string) {
 /**
  * The default value parser.
  */
-export function parse<T>(value: string | undefined, ext: IParserExt<T>) {
+export function parse(value: string | undefined, ext: IFieldExt) {
   const { fieldType, fieldName } = ext;
   switch (true) {
-    case fieldType === (String as Constructor<unknown>):
+    case fieldType === (String as Constructor):
       return value;
-    case fieldType === (Number as Constructor<unknown>):
+    case fieldType === (Number as Constructor):
       return parseNumber(value);
-    case fieldType === (Boolean as Constructor<unknown>):
+    case fieldType === (Boolean as Constructor):
       return parseBool(value);
     default:
       throw new TypeError(`From instance '${fieldName.toString()}' get an unsupported type: '${fieldType.name}'.`);

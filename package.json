@@ -1,11 +1,10 @@
 {
-  "name": "class-configuration",
-  "version": "0.5.0",
+  "name": "class-config",
   "description": "The config package to define and read the configuration",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "cover": "nyc mocha",
+    "report": "nyc report --reporter=lcovonly"
   },
   "keywords": [
     "class",
