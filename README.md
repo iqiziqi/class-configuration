@@ -1,4 +1,4 @@
-# Class-Configuration
+# Class-Config
 
 ![test](https://github.com/iqiziqi/class-configuration/actions/workflows/test.yml/badge.svg)
 [![codecov](https://codecov.io/gh/iqiziqi/class-configuration/branch/dev/graph/badge.svg?token=LL7I9PEF0Y)](https://codecov.io/gh/iqiziqi/class-configuration)
@@ -31,7 +31,7 @@ First, You can use `@Config` define your configuration class. Next, use `@Config
 
 ```ts
 import 'reflect-metadata';
-import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv, init } from 'class-configuration';
+import { BaseConfig, Config, ConfigField } from '@class-config/core';
 
 @Config()
 class Configuration extends BaseConfig {
@@ -49,15 +49,16 @@ class Configuration extends BaseConfig {
 }
 ```
 
-### Load config with environment
+### Config Source
 
-You can use `@FromEnv` load config field from environment.
+You can use `@From` load config field from a config source.
 
 For example:
 
 ```ts
 import 'reflect-metadata';
-import { BaseConfig Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
+import { BaseConfig, Config, ConfigField, From } from '@class-config/core';
+import { Env } from '@class-config/source-env';
 
 process.env.SERVER_HOST = 'localhost';
 process.env.SERVER_PORT = '8080';
@@ -68,49 +69,19 @@ class Configuration extends BaseConfig {
    * The server host
    */
   @ConfigField()
-  @FromEnv('SERVER_HOST')
+  @From(new Env('SERVER_HOST'))
   public host!: string;
 
   /**
    * The server port
    */
   @ConfigField()
-  @FromEnv('SERVER_PORT')
+  @From(new Env('SERVER_PORT'))
   public port!: number;
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = await Configuration.initAsync<Configuration>();
-```
-
-If have no params set, Will use field name.
-
-```ts
-import 'reflect-metadata';
-import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
-
-process.env.SERVER_HOST = 'localhost';
-process.env.SERVER_PORT = '8080';
-
-@Config()
-class Configuration {
-  /**
-   * The server host
-   */
-  @ConfigField()
-  @FromEnv()  // Will load environment by name 'SERVER_HOST'
-  public serverHost!: string;
-
-  /**
-   * The server port
-   */
-  @ConfigField()
-  @FromEnv()   // Will load environment by name 'SERVER_PORT'
-  public serverPort!: number;
-}
-
-// configuration = { "host": "localhost", "port": 8080 }
-const configuration = await Configuration.initAsync<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 ### Load config with default value
@@ -121,7 +92,7 @@ For example:
 
 ```ts
 import 'reflect-metadata';
-import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
+import { BaseConfig, Config, ConfigField, DefaultValue } from '@class-config/core';
 
 @Config()
 class Configuration extends BaseConfig {
@@ -141,14 +112,15 @@ class Configuration extends BaseConfig {
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = await Configuration.initAsync<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 ### Basic
 
 ```ts
 import 'reflect-metadata';
-import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
+import { BaseConfig, Config, ConfigField, DefaultValue, From } from '@class-config/core';
+import { Env } from '@class-config/source-env';
 
 @Config()
 class Configuration extends BaseConfig {
@@ -156,7 +128,7 @@ class Configuration extends BaseConfig {
    * The server host
    */
   @ConfigField()
-  @FromEnv('SERVER_HOST')
+  @From(new Env('SERVER_HOST'))
   @DefaultValue('localhost')
   public host!: string;
 
@@ -164,20 +136,21 @@ class Configuration extends BaseConfig {
    * The server port
    */
   @ConfigField()
-  @FromEnv('SERVER_PORT')
+  @From(new Env('SERVER_PORT'))
   @DefaultValue('8080')
   public port!: number;
 }
 
 // configuration = { "host": "localhost", "port": 8080 }
-const configuration = await Configuration.initAsync<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 ### Class config
 
 ```ts
 import 'reflect-metadata';
-import { BaseConfig, Config, ConfigField, DefaultValue, FromEnv } from 'class-configuration';
+import { BaseConfig, Config, ConfigField, DefaultValue, From } from '@class-config/core';
+import { Env } from '@class-config/source-env';
 
 @Config()
 class Database extends BaseConfig {
@@ -185,7 +158,7 @@ class Database extends BaseConfig {
    * The server host
    */
   @ConfigField()
-  @FromEnv('SERVER_HOST')
+  @From(new Env('SERVER_HOST'))
   @DefaultValue('localhost')
   public host!: string;
 
@@ -193,7 +166,7 @@ class Database extends BaseConfig {
    * The server port
    */
   @ConfigField()
-  @FromEnv('SERVER_PORT')
+  @From(new Env('SERVER_PORT'))
   @DefaultValue('8080')
   public port!: number;
 }
@@ -208,7 +181,7 @@ class Configuration {
 }
 
 // configuration = { "database: { "host": "localhost", "port": 8080 } }
-const configuration = await Configuration.initAsync<Configuration>();
+const configuration = await Configuration.init<Configuration>();
 ```
 
 ### Customize parser
@@ -229,7 +202,7 @@ class DatabaseConfig extends BaseConfig {
 }
 
 // configuration = { "hosts": ["127.0.0.1", "127.0.0.2"] }
-const configuration = await DatabaseConfig.initAsync<DatabaseConfig>();
+const configuration = await DatabaseConfig.init<DatabaseConfig>();
 ```
 
 > Notice: This package does not check the type of the return value of the custom parser.
