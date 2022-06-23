@@ -16,6 +16,10 @@
   ],
   "author": "iqiziqi",
   "license": "MIT",
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts"
+  ],
   "dependencies": {
     "@class-config/core": "workspace:^0.5.0"
   },
