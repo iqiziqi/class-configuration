@@ -1,9 +1,9 @@
 # class-config
 
-![test](https://github.com/iqiziqi/class-configuration/actions/workflows/test.yml/badge.svg)
+![Node.js CI](https://github.com/iqiziqi/class-configuration/actions/workflows/node.yml/badge.svg)
 [![codecov](https://codecov.io/gh/iqiziqi/class-configuration/branch/dev/graph/badge.svg?token=LL7I9PEF0Y)](https://codecov.io/gh/iqiziqi/class-configuration)
 
-The config package to define and read the configuration
+The config package to define and read the configuration.
 
 ## Prepare
 
@@ -51,7 +51,7 @@ class Configuration extends BaseConfig {
 
 ### Config Source
 
-The 'config source' specifies where to load the config data from. Below are some config sources:
+The 'config source' specifies how to load the config data from. Below are some config sources:
 
 * [@class-config/source-env](packages/source-env)
 
@@ -250,3 +250,9 @@ class Configuration {
 // configuration = { "database: { "host": "localhost", "port": 8080 } }
 const configuration = await Configuration.init<Configuration>();
 ```
+
+## More Information
+
+* [@class-config/core](packages/core/README.md)
+* [@class-config/source-env](packages/source-env/README.md)
+* [@class-config/validator-class](packages/validator-class/README.md)

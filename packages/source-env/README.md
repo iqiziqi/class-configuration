@@ -1,6 +1,6 @@
 # @class-config/source-env
 
-![test](https://github.com/iqiziqi/class-configuration/actions/workflows/test.yml/badge.svg)
+![Node.js CI](https://github.com/iqiziqi/class-configuration/actions/workflows/node.yml/badge.svg)
 [![codecov](https://codecov.io/gh/iqiziqi/class-configuration/branch/dev/graph/badge.svg?token=LL7I9PEF0Y)](https://codecov.io/gh/iqiziqi/class-configuration)
 
 This is the class config source. This package provides the ability to get configuration from environment variables.
