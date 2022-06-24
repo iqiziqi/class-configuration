@@ -118,7 +118,10 @@ export class BaseConfig {
   public static async from<T extends BaseConfig>(constructor: Constructor, options?: IConfigOptions): Promise<T> {
     const instance = this.instantiate<T>(constructor);
     const { validator } = options || {};
-    if (validator) await validator.validate(instance);
+    if (validator) {
+      const errMsg = await validator.validate(instance);
+      if (errMsg.length) throw new Error(errMsg.join('\n'));
+    }
     return instance;
   }
 }

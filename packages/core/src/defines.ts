@@ -19,7 +19,7 @@ export interface IConfigSource<T> {
 }
 
 export interface IValidator {
-  validate: (config: object) => boolean | Promise<boolean>;
+  validate: (config: object) => string[] | Promise<string[]>;
 }
 
 export interface IConfigOptions {
