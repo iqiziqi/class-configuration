@@ -1,0 +1,26 @@
+{
+  "name": "@class-config/nestjs",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "pnpm run clean && tsc -p ./tsconfig.build.json",
+    "clean": "trash dist"
+  },
+  "keywords": [
+    "class",
+    "config",
+    "nestjs"
+  ],
+  "author": "iqiziqi",
+  "license": "MIT",
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts"
+  ],
+  "dependencies": {
+    "@class-config/core": "workspace:^0.6.0",
+    "@nestjs/common": "^8.4.7"
+  }
+}

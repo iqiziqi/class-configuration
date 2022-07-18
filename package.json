@@ -49,6 +49,7 @@
   },
   "workspaces": [
     "packages/core",
+    "packages/nestjs",
     "packages/source-env",
     "packages/validator-class"
   ],
