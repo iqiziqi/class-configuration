@@ -49,13 +49,13 @@ importers:
 
   packages/source-env:
     specifiers:
-      '@class-config/core': workspace:^0.5.0
+      '@class-config/core': workspace:^0.6.0
     dependencies:
       '@class-config/core': link:../core
 
   packages/validator-class:
     specifiers:
-      '@class-config/core': workspace:^0.5.0
+      '@class-config/core': workspace:^0.6.0
       class-validator: ^0.13.2
     dependencies:
       '@class-config/core': link:../core

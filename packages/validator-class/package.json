@@ -1,6 +1,6 @@
 {
   "name": "@class-config/validator-class",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "The package of validator config by class-validator",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,7 +21,7 @@
     "dist/*.d.ts"
   ],
   "dependencies": {
-    "@class-config/core": "workspace:^0.5.0"
+    "@class-config/core": "workspace:^0.6.0"
   },
   "optionalDependencies": {
     "class-validator": "^0.13.2"
