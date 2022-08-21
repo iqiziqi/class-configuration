@@ -4,4 +4,4 @@
 
 ### Minor Changes
 
-- Change the workspaces.
+*   Change the workspaces.
