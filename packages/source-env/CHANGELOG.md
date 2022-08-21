@@ -4,9 +4,9 @@
 
 ### Minor Changes
 
-- Change the workspaces.
+*   Change the workspaces.
 
 ### Patch Changes
 
-- Updated dependencies
-  - @class-config/core@0.6.0
+*   Updated dependencies
+    *   @class-config/core@0.6.0

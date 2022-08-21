@@ -53,7 +53,7 @@ class Configuration extends BaseConfig {
 
 The 'config source' specifies how to load the config data from. Below are some config sources:
 
-* [@class-config/source-env](packages/source-env)
+*   [@class-config/source-env](packages/source-env)
 
 You can use `@From` load config field from a config source.
 
@@ -144,7 +144,7 @@ const configuration = await DatabaseConfig.init<DatabaseConfig>();
 
 The validator will check if your config file is valid. Below is some validator.
 
-* [@class-config/validator-class](packages/validator-class)
+*   [@class-config/validator-class](packages/validator-class)
 
 You can't set validator by `init`.
 
@@ -253,6 +253,6 @@ const configuration = await Configuration.init<Configuration>();
 
 ## More Information
 
-* [@class-config/core](packages/core/README.md)
-* [@class-config/source-env](packages/source-env/README.md)
-* [@class-config/validator-class](packages/validator-class/README.md)
+*   [@class-config/core](packages/core/README.md)
+*   [@class-config/source-env](packages/source-env/README.md)
+*   [@class-config/validator-class](packages/validator-class/README.md)

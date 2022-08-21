@@ -3,7 +3,9 @@
   "description": "The config package to define and read the configuration",
   "scripts": {
     "prepare": "husky install",
-    "lint": "eslint --fix --config .eslintrc packages/**/src/*.ts packages/**/tests/*.ts",
+    "lint": "pnpm run lint:ts && pnpm run lint:md",
+    "lint:ts": "eslint --fix --config .eslintrc packages/**/src/*.ts packages/**/tests/*.ts",
+    "lint:md": "remark . --quiet --frail --output",
     "cover": "nyc mocha",
     "report": "nyc report --reporter=lcovonly",
     "build": "pnpm --filter=* run build"
@@ -33,6 +35,14 @@
     "nyc": "^15.1.0",
     "prettier": "^2.6.2",
     "reflect-metadata": "^0.1.13",
+    "remark": "^14.0.2",
+    "remark-cli": "^11.0.0",
+    "remark-lint": "^9.1.1",
+    "remark-lint-emphasis-marker": "^3.1.1",
+    "remark-lint-list-item-indent": "^3.1.1",
+    "remark-lint-strong-marker": "^3.1.1",
+    "remark-preset-lint-consistent": "^5.1.1",
+    "remark-preset-lint-recommended": "^6.1.2",
     "trash-cli": "^5.0.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
@@ -41,5 +51,11 @@
     "packages/core",
     "packages/source-env",
     "packages/validator-class"
-  ]
+  ],
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-consistent",
+      "remark-preset-lint-recommended"
+    ]
+  }
 }

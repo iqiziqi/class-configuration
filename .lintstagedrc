@@ -6,5 +6,8 @@
   "packages/**/tests/*.ts": [
     "prettier --write",
     "eslint --fix"
+  ],
+  "*.md": [
+    "remark --quiet --frail --output"
   ]
 }
