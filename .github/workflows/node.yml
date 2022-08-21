@@ -71,7 +71,7 @@ jobs:
           files: lcov.info
           verbose: true
   publish:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     needs: [report]
     runs-on: ubuntu-20.04
     strategy:
@@ -100,4 +100,4 @@ jobs:
       - name: Setup npmrc
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
       - name: Publish
-        run: pnpm publish -r
+        run: pnpm publish -r --access public
